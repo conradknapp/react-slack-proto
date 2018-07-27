@@ -20,7 +20,10 @@ class MetaPanel extends Component {
 
   render() {
     const { activeIndex } = this.state;
-    const { currentChannel } = this.props;
+    const { currentChannel, isPrivateChannel } = this.props;
+
+    if (isPrivateChannel) return null;
+
     return (
       <Segment loading={!currentChannel}>
         <Header as="h3" attached="top">
@@ -73,7 +76,8 @@ class MetaPanel extends Component {
 }
 
 const mapStateToProps = state => ({
-  currentChannel: state.channel.currentChannel
+  currentChannel: state.channel.currentChannel,
+  isPrivateChannel: state.channel.isPrivateChannel
 });
 
 export default connect(mapStateToProps)(MetaPanel);

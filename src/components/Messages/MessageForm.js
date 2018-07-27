@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
-import { Segment, Button, Form, Input } from "semantic-ui-react";
+import { Segment, Button, Input } from "semantic-ui-react";
 import uuidv4 from "uuid/v4";
 import { Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
@@ -29,13 +29,19 @@ class MessageForm extends React.Component {
   }
 
   handleChange = event =>
-    this.setState({ [event.target.name]: event.target.value.trim() });
+    this.setState({ [event.target.name]: event.target.value });
+
+  handleKeyDown = event => {
+    if (event.keyCode === 13 && event.ctrlKey) {
+      this.sendMessage();
+    }
+  };
 
   openModal = () => this.setState({ modal: true });
 
   closeModal = () => this.setState({ modal: false });
 
-  toggleEmojiPicker = () =>
+  toggleEmojiPicker = event =>
     this.setState({ emojiPicker: !this.state.emojiPicker });
 
   createMessage = (fileUrl = null) => {
@@ -64,7 +70,6 @@ class MessageForm extends React.Component {
       .set(this.createMessage())
       .then(() => {
         this.setState({ message: "" });
-        this.refs.message.ref.value = "";
       })
       .catch(err => {
         console.error(err);
@@ -148,7 +153,13 @@ class MessageForm extends React.Component {
   };
 
   render() {
-    const { modal, percentUploaded, uploadState, emojiPicker } = this.state;
+    const {
+      modal,
+      message,
+      percentUploaded,
+      uploadState,
+      emojiPicker
+    } = this.state;
 
     return (
       <Segment className="messages__form">
@@ -156,44 +167,44 @@ class MessageForm extends React.Component {
           <Picker
             set="emojione"
             onSelect={data => console.log(data)}
-            style={{ position: "absolute", bottom: "140px" }}
+            className="emojipicker"
             title="Pick your emoji"
             emoji="point_up"
           />
         )}
-        <Form style={{ position: "relative" }}>
-          <Input
-            fluid
-            ref="message"
-            name="message"
-            label={
-              <Button
-                icon={emojiPicker ? "close" : "add"}
-                onClick={this.toggleEmojiPicker}
-                content={emojiPicker ? "Close" : null}
-              />
-            }
+        <Input
+          fluid
+          name="message"
+          onKeyDown={this.handleKeyDown}
+          onChange={this.handleChange}
+          label={
+            <Button
+              icon={emojiPicker ? "close" : "add"}
+              onClick={this.toggleEmojiPicker}
+              content={emojiPicker ? "Close" : null}
+            />
+          }
+          value={message}
+          labelPosition="left"
+          placeholder="Write your message"
+        />
+        <Button.Group icon widths="2">
+          <Button
+            color="orange"
+            content="Add Reply"
             labelPosition="left"
-            placeholder="Write your message"
+            icon="edit"
+            onClick={this.sendMessage}
           />
-          <Button.Group icon widths="2">
-            <Button
-              color="orange"
-              content="Add Reply"
-              labelPosition="left"
-              icon="edit"
-              onClick={this.sendMessage}
-            />
-            <Button
-              color="teal"
-              content="Upload Media"
-              labelPosition="right"
-              icon="cloud upload"
-              disabled={uploadState === "uploading"}
-              onClick={this.openModal}
-            />
-          </Button.Group>
-        </Form>
+          <Button
+            color="teal"
+            content="Upload Media"
+            labelPosition="right"
+            icon="cloud upload"
+            disabled={uploadState === "uploading"}
+            onClick={this.openModal}
+          />
+        </Button.Group>
         <FileModal
           modal={modal}
           closeModal={this.closeModal}

@@ -55,6 +55,8 @@ html {
   height: 450px;
 } */
 
+/* MessagesForm.js */
+
 .messages__form {
   position: fixed !important;
   bottom: 1em;
@@ -62,6 +64,25 @@ html {
   left: 0;
   right: 1em;
   z-index: 200;
+}
+
+.emojipicker {
+  position: absolute;
+  bottom: 140px;
+}
+
+/* Messages.js */
+
+.messages {
+  height: 400px;
+  overflow-y: scroll;
+}
+
+/* Message.js */
+
+.message__self {
+  border-left: 2px solid orange;
+  padding-left: 8px;
 }
 
 /* Skeleton.js */

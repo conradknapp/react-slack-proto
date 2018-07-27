@@ -16,7 +16,7 @@ class Messages extends React.Component {
     messages: [],
     listeners: [],
     channel: null,
-    loading: false
+    loading: true
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -46,7 +46,7 @@ class Messages extends React.Component {
   }
 
   addListeners = channelId => {
-    this.setState({ loading: true });
+    this.setState({ loading: false });
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
       this.setState({
@@ -83,34 +83,36 @@ class Messages extends React.Component {
   };
 
   getChannelName = channel =>
-    `${this.props.isPrivateChannel ? "@" : "#"}${channel.name}`;
+    channel
+      ? `${this.props.isPrivateChannel ? "@" : "#"}${channel.name}`
+      : null;
 
   displayMessages = messages =>
-    messages.length > 0 && messages.map(message => (
+    messages.length > 0 &&
+    messages.map(message => (
       <Message key={message.timestamp} message={message} />
     ));
 
   displaySkeleton = loading =>
-    !loading ? (<React.Fragment>
-      {[...Array(10)].map((_, i) => <Skeleton key={i} />)}
-    </React.Fragment>
-  ) : null;
+    loading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_, i) => <Skeleton key={i} />)}
+      </React.Fragment>
+    ) : null;
 
   render() {
     const { channel, messages, loading } = this.state;
 
     return (
       <React.Fragment>
-        <MessagesHeader channel={channel && this.getChannelName(channel)} />
-        <div>
-          <Segment>
-            <Comment.Group style={{ height: "400px", overflowY: "scroll" }}>
-              {this.displaySkeleton(loading)}
-              {this.displayMessages(messages)}
-            </Comment.Group>
-          </Segment>
-          <MessageForm />
-        </div>
+        <MessagesHeader channel={this.getChannelName(channel)} />
+        <Segment>
+          <Comment.Group className="messages">
+            {this.displaySkeleton(loading)}
+            {this.displayMessages(messages)}
+          </Comment.Group>
+        </Segment>
+        <MessageForm getMessagesRef={this.getMessagesRef} />
       </React.Fragment>
     );
   }

@@ -99,6 +99,7 @@ class Channels extends React.Component {
   };
 
   displayChannels = channels =>
+    channels.length > 0 &&
     channels.map(channel => (
       <Menu.Item
         key={channel.id}
@@ -125,12 +126,11 @@ class Channels extends React.Component {
             <span>
               <Icon name="exchange" /> CHANNELS
             </span>{" "}
-            ({this.state.channels.length}){" "}
+            ({channels.length})
             <Icon name="add" onClick={this.openModal} />
           </Menu.Item>
-          {channels.length > 0 && this.displayChannels(channels)}
+          {this.displayChannels(channels)}
         </Menu.Menu>
-        {/* divider */}
 
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a channel</Modal.Header>
