@@ -1,0 +1,18 @@
+- Toggle themes (with CSS variables?)
+- Provide ability to star certain channels (and/or messages; look at the FEM Firebase videos for guidance)
+- Use an emoji picker for the Message input (https://github.com/conorhastings/react-emoji-react)
+- Add an infinite scroll (see furniture app)
+- Create skeleton messages when messages are loading
+- Show an arrow up button when you scroll a certain amount (like in super chats)
+- Add notifications within the bell in current user
+- Provide dropdown options to do things like 'Change Avatar'
+- Provide keyboard shortcuts like ctrl enter to send a message
+- Use the Intersection Observer API to performantly load images
+- Allow liking users' messages (to correspond with emojis?) by double clicking them
+- Maybe have toast notifications for users that log in (which you can change your setting for in user dropdown)
+- Underneath the channel name, provide the number of unique users that are in the chat
+- Provide a typing animation when someone is writing
+- Have the right panel be more details about each channel (add additional inputs/properties to the form used for creating a channel)
+- Maybe provide times next to each message that are more detailed
+- Give users the ability to reset their password (look at Wieruch's book - https://github.com/rwieruch/the-road-to-react-with-firebase/blob/master/manuscript/chapter4.md)
+- When messages are loading, make sure to disable the form buttons (or disable input)
