@@ -5,7 +5,6 @@ import { Grid } from "semantic-ui-react";
 
 import SidePanel from "./components/SidePanel/SidePanel";
 import ColorPanel from "./components/ColorPanel/ColorPanel";
-import ChatHeader from "./components/ChatHeader/ChatHeader";
 import Messages from "./components/Messages/Messages";
 import MetaPanel from "./components/MetaPanel/MetaPanel";
 
@@ -17,7 +16,6 @@ class App extends Component {
         <SidePanel />
 
         <Grid.Column style={{ marginLeft: 320 }}>
-          <ChatHeader />
           <Messages />
         </Grid.Column>
 

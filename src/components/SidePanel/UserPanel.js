@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
-  Dropdown, Icon, Menu, Segment, Image as Img, Modal, Input, Button, Message } from "semantic-ui-react";
+ Dropdown, Icon, Header, Segment, Image as Img, Modal, Input, Button, Message } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
 import AvatarEditor from "react-avatar-editor";
 
@@ -23,7 +23,6 @@ class UserPanel extends React.Component {
       key: "user",
       text: (
         <span>
-          <Img src={this.props.currentUser.photoURL} />
           Signed in as <strong>{this.props.currentUser.displayName}</strong>
         </span>
       ),
@@ -107,25 +106,26 @@ class UserPanel extends React.Component {
 
   render() {
     const { modal, errors, previewImage, croppedImage } = this.state;
-    const { currentUser } = this.props;
+    // const { currentUser } = this.props;
 
     return (
-      <Segment inverted style={{ backgroundColor: "#4c3c4c" }}>
-        <Menu.Header as="h2">
+      <Segment clearing inverted style={{ backgroundColor: "#4c3c4c" }}>
+        <Header floated="left" as="h3">
           <Dropdown
             trigger={<span>DevChat</span>}
             options={this.dropdownOptions()}
           />
+        </Header>
+        <Header floated="right">
           <Icon.Group>
             <Icon name="bell outline" />
             <Icon corner className="top right" name="circle" color="blue" />
           </Icon.Group>
-        </Menu.Header>
-        <Icon name="circle" color="green" />
-        <span style={{ color: "white", opacity: 0.7 }}>
+        </Header>
+        {/* <Item>
           {currentUser.displayName}
-        </span>
-
+          <Icon name="circle" color="green" />
+        </Item> */}
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a channel</Modal.Header>
           <Modal.Content>

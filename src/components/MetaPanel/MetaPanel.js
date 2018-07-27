@@ -1,8 +1,14 @@
 import React, { Component } from "react";
-import { Header, Segment, Accordion, Icon } from "semantic-ui-react";
+import { Header, Segment, Accordion, Icon, Image } from "semantic-ui-react";
+
+import { connect } from "react-redux";
 
 class MetaPanel extends Component {
-  state = { activeIndex: 0 };
+  state = {
+    loading: false,
+    currentChannel: null,
+    activeIndex: 0
+  };
 
   handleClick = (e, titleProps) => {
     const { index } = titleProps;
@@ -14,11 +20,11 @@ class MetaPanel extends Component {
 
   render() {
     const { activeIndex } = this.state;
-
+    const { currentChannel } = this.props;
     return (
-      <Segment>
+      <Segment loading={!currentChannel}>
         <Header as="h3" attached="top">
-          About # Inbox
+          About # {currentChannel && currentChannel.name}
         </Header>
         <Accordion styled attached="true">
           <Accordion.Title
@@ -27,10 +33,11 @@ class MetaPanel extends Component {
             onClick={this.handleClick}
           >
             <Icon name="dropdown" />
+            <Icon name="info" />
             Channel Details
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 0}>
-            <p>This channel is talking about what we get mailed to us</p>
+            {currentChannel && currentChannel.details}
           </Accordion.Content>
 
           <Accordion.Title
@@ -39,15 +46,11 @@ class MetaPanel extends Component {
             onClick={this.handleClick}
           >
             <Icon name="dropdown" />
+            <Icon name="user circle" />
             Members
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 1}>
-            <p>
-              There are many breeds of dogs. Each breed varies in size and
-              temperament. Owners often select a breed of dog that they find to
-              be compatible with their own lifestyle and desires from a
-              companion.
-            </p>
+            <p>Doug Jeff Fred</p>
           </Accordion.Content>
 
           <Accordion.Title
@@ -56,20 +59,12 @@ class MetaPanel extends Component {
             onClick={this.handleClick}
           >
             <Icon name="dropdown" />
-            Shared Files
+            <Icon name="pencil alternate" />
+            Created By
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 2}>
-            <p>
-              Three common ways for a prospective owner to acquire a dog is from
-              pet shops, private owners, or shelters.
-            </p>
-            <p>
-              A pet shop may be the most convenient way to buy a dog. Buying a
-              dog from a private owner allows you to assess the pedigree and
-              upbringing of your dog before choosing to take it home. Lastly,
-              finding your dog from a shelter, helps give a good home to a dog
-              who may not find one so readily.
-            </p>
+            {currentChannel && <Image src={currentChannel.createdBy.avatar} />}
+            {currentChannel && currentChannel.createdBy.name}
           </Accordion.Content>
         </Accordion>
       </Segment>
@@ -77,4 +72,8 @@ class MetaPanel extends Component {
   }
 }
 
-export default MetaPanel;
+const mapStateToProps = state => ({
+  currentChannel: state.channel.currentChannel
+});
+
+export default connect(mapStateToProps)(MetaPanel);
