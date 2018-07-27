@@ -16,7 +16,16 @@ class Messages extends React.Component {
     messages: [],
     listeners: [],
     channel: null,
-    loading: true
+    loading: true,
+    searchTerm: "",
+    searchResults: [],
+    uniqueUsers: null
+  };
+
+  handleSearchChange = event => {
+    this.setState({ searchTerm: event.target.value }, () =>
+      this.handleSearch()
+    );
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -45,12 +54,37 @@ class Messages extends React.Component {
     this.detachListeners(this.state.listeners);
   }
 
+  handleSearch = () => {
+    const channelMessages = [...this.state.messages];
+    const regex = new RegExp(this.state.searchTerm, "gi");
+    const searchResults = channelMessages.reduce((acc, message) => {
+      if (message.content.match(regex) || message.user.name.match(regex)) {
+        acc.push(message);
+      }
+      return acc;
+    }, []);
+    this.setState({ searchResults });
+  };
+
+  countUniqueUsers = (messages = []) => {
+    const users = messages.reduce((acc, message) => {
+      if (!acc.includes(message.user.name)) {
+        acc.push(message.user.name);
+      }
+      return acc;
+    }, []);
+    const uniqueUsers = `${users.length} user${users.length > 1 ? "s" : ""}`;
+    this.setState({ uniqueUsers });
+  };
+
   addListeners = channelId => {
     this.setState({ loading: false });
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
+      let messages = [snap.val(), ...this.state.messages];
+      this.countUniqueUsers(messages);
       this.setState({
-        messages: [snap.val(), ...this.state.messages],
+        messages,
         loading: false
       });
     });
@@ -101,15 +135,28 @@ class Messages extends React.Component {
     ) : null;
 
   render() {
-    const { channel, messages, loading } = this.state;
+    const {
+      channel,
+      messages,
+      loading,
+      searchTerm,
+      searchResults,
+      uniqueUsers
+    } = this.state;
 
     return (
       <React.Fragment>
-        <MessagesHeader channel={this.getChannelName(channel)} />
+        <MessagesHeader
+          channel={this.getChannelName(channel)}
+          handleSearchChange={this.handleSearchChange}
+          uniqueUsers={uniqueUsers}
+        />
         <Segment>
           <Comment.Group className="messages">
             {this.displaySkeleton(loading)}
-            {this.displayMessages(messages)}
+            {searchTerm
+              ? this.displayMessages(searchResults)
+              : this.displayMessages(messages)}
           </Comment.Group>
         </Segment>
         <MessageForm getMessagesRef={this.getMessagesRef} />
