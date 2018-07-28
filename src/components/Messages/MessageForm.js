@@ -3,7 +3,7 @@ import firebase from "../../firebase";
 import { connect } from "react-redux";
 import { Segment, Button, Input } from "semantic-ui-react";
 import uuidv4 from "uuid/v4";
-import { Picker } from "emoji-mart";
+import { Picker, emojiIndex } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 
 import FileModal from "./FileModal";
@@ -20,6 +20,10 @@ class MessageForm extends React.Component {
     storageRef: firebase.storage().ref(),
     emojiPicker: false
   };
+
+  componentDidMount() {
+    this.messageInputRef.focus();
+  }
 
   componentWillUnmount() {
     if (this.state.uploadTask !== null) {
@@ -152,6 +156,31 @@ class MessageForm extends React.Component {
     }
   };
 
+  colonToUnicode = message => {
+    // Takes string and returns string (Converts colon emoji to unicode)
+    return message.replace(/:[A-Za-z0-9_+-]+:/g, x => {
+      x = x.replace(/:/g, "");
+      let emoji = emojiIndex.emojis[x];
+      if (typeof emoji !== "undefined") {
+        let unicode = emoji.native;
+        if (typeof unicode !== "undefined") {
+          return unicode;
+        }
+      }
+      x = ":" + x + ":";
+      // If no unicode found, return colon itself
+      return x;
+    });
+  };
+
+  handleAddEmoji = emoji => {
+    let oldMessage = this.state.message;
+    let newMessage = this.colonToUnicode(`${oldMessage} ${emoji.colons} `);
+    this.setState({ message: newMessage, emojiPicker: false });
+    // focus in textarea on choosing emoji
+    setTimeout(() => this.messageInputRef.focus(), 100);
+  };
+
   render() {
     const {
       modal,
@@ -165,8 +194,8 @@ class MessageForm extends React.Component {
       <Segment className="messages__form">
         {emojiPicker && (
           <Picker
-            set="emojione"
-            onSelect={data => console.log(data)}
+            set="apple"
+            onSelect={this.handleAddEmoji}
             className="emojipicker"
             title="Pick your emoji"
             emoji="point_up"
@@ -174,6 +203,7 @@ class MessageForm extends React.Component {
         )}
         <Input
           fluid
+          ref={c => (this.messageInputRef = c)}
           className="messages__form--input"
           name="message"
           onKeyDown={this.handleKeyDown}

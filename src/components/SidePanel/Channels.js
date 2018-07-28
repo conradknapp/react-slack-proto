@@ -15,7 +15,7 @@ class Channels extends React.Component {
     modal: false,
     channelsRef: firebase.database().ref("channels"),
     messagesRef: firebase.database().ref("messages"),
-    firstLoad: true,
+    initialLoad: true,
     notificationCount: []
   };
 
@@ -31,10 +31,10 @@ class Channels extends React.Component {
     this.state.channelsRef.on("child_added", snap => {
       // this.addCountListener(snap.key);
       this.setState({ channels: [...this.state.channels, snap.val()] });
-      if (this.state.firstLoad && this.state.channels.length > 0) {
+      if (this.state.initialLoad && this.state.channels.length > 0) {
         this.props.setCurrentChannel(this.state.channels[0]);
       }
-      this.setState({ firstLoad: false });
+      this.setState({ initialLoad: false });
     });
   };
 

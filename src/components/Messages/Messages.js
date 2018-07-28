@@ -60,6 +60,8 @@ class Messages extends React.Component {
     }
   }
 
+  // componentDidMount() {}
+
   componentWillUnmount() {
     this.detachListeners(this.state.listeners);
   }
@@ -67,28 +69,42 @@ class Messages extends React.Component {
   getUserStars = () => {
     this.state.usersRef
       .child(this.props.currentUser.uid)
+      .child("starred")
       .once("value")
       .then(data => {
-        console.log(data.val());
+        const channelIds = Object.keys(data.val());
+        console.log(channelIds);
+        // console.log(data.val());
+        const prevStarred = channelIds.includes(this.props.currentChannel.id);
+        this.setState({ isStarred: prevStarred });
       })
       .catch(err => console.error(err));
   };
 
-  starChannel = () => {
-    // this.state.usersRef
-    //   .child(this.props.currentUser.id)
-    //   .child("likes")
-    //   .push(1);
+  handleStar = () => {
     this.setState(
       prevState => ({
         isStarred: !prevState.isStarred
       }),
-      () => this.unStarChannel()
+      () => this.starChannel()
     );
   };
 
-  unStarChannel = () => {
-    console.log("unstar");
+  starChannel = () => {
+    if (this.state.isStarred) {
+      console.log("star");
+      this.state.usersRef
+        .child(`${this.props.currentUser.uid}/starred`)
+        .update({
+          [this.props.currentChannel.id]: this.props.currentChannel.name
+        });
+    } else {
+      console.log("unstar");
+      this.state.usersRef
+        .child(`${this.props.currentUser.uid}/starred`)
+        .child(this.props.currentChannel.id)
+        .remove();
+    }
   };
 
   handleSearch = () => {
@@ -193,7 +209,7 @@ class Messages extends React.Component {
         <MessagesHeader
           channel={this.getChannelName(channel)}
           handleSearchChange={this.handleSearchChange}
-          starChannel={this.starChannel}
+          handleStar={this.handleStar}
           uniqueUsers={uniqueUsers}
           searchFocused={searchFocused}
           searchLoading={searchLoading}

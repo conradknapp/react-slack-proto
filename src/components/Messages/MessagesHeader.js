@@ -13,7 +13,7 @@ class MessagesHeader extends React.Component {
 
   focusSearchInput = event => {
     const isInput = document.activeElement.nodeName === "INPUT";
-    if (event.keyCode === 191 && !isInput) {
+    if (event.key === "/" && !isInput) {
       this.searchInputRef.focus();
     }
   };
@@ -24,7 +24,7 @@ class MessagesHeader extends React.Component {
       handleSearchChange,
       uniqueUsers,
       searchLoading,
-      starChannel,
+      handleStar,
       isStarred
     } = this.props;
 
@@ -36,7 +36,7 @@ class MessagesHeader extends React.Component {
             <Icon
               size="small"
               name={isStarred ? "star" : "star outline"}
-              onClick={starChannel}
+              onClick={handleStar}
               color={isStarred ? "yellow" : "black"}
             />
           </span>

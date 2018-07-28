@@ -34,7 +34,7 @@ class Message extends React.Component {
           <Comment.Author as="a">{message.user.name}</Comment.Author>
           <Comment.Metadata>{this.fromNow(message.timestamp)}</Comment.Metadata>
           {image ? (
-            <Image src={message.image} />
+            <Image src={message.image} className="message__image" />
           ) : (
             <Comment.Text>{message.content}</Comment.Text>
           )}
