@@ -174,6 +174,7 @@ class MessageForm extends React.Component {
         )}
         <Input
           fluid
+          className="messages__form--input"
           name="message"
           onKeyDown={this.handleKeyDown}
           onChange={this.handleChange}
@@ -211,8 +212,8 @@ class MessageForm extends React.Component {
           uploadFile={this.uploadFile}
         />
         <ProgressBar
-          uploadState={uploadState}
           percentUploaded={percentUploaded}
+          uploadState={uploadState}
         />
       </Segment>
     );

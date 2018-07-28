@@ -95,7 +95,10 @@ class Messages extends React.Component {
     const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
     const searchResults = channelMessages.reduce((acc, message) => {
-      if (message.content.match(regex) || message.user.name.match(regex)) {
+      if (
+        (message.content && message.content.match(regex)) ||
+        message.user.name.match(regex)
+      ) {
         acc.push(message);
       }
       return acc;

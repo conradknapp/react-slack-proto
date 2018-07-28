@@ -66,15 +66,24 @@ html {
   z-index: 200;
 }
 
+.messages__form--input {
+  margin-bottom: 0.7em;
+}
+
 .emojipicker {
   position: absolute;
-  bottom: 140px;
+}
+
+/* ProgressBar.js */
+
+.progress__bar {
+  margin: 0.3em 0 0 0 !important;
 }
 
 /* Messages.js */
 
 .messages {
-  height: 400px;
+  height: 440px;
   overflow-y: scroll;
 }
 
