@@ -13,18 +13,26 @@ class Messages extends React.Component {
   state = {
     messagesRef: firebase.database().ref("messages"),
     privateMessagesRef: firebase.database().ref("privateMessages"),
+    usersRef: firebase.database().ref("users"),
     messages: [],
     listeners: [],
     channel: null,
     loading: true,
     searchTerm: "",
     searchResults: [],
-    uniqueUsers: null
+    searchFocused: false,
+    searchLoading: false,
+    uniqueUsers: "",
+    isStarred: false
   };
 
   handleSearchChange = event => {
-    this.setState({ searchTerm: event.target.value }, () =>
-      this.handleSearch()
+    this.setState(
+      {
+        searchTerm: event.target.value,
+        searchLoading: true
+      },
+      () => this.handleSearch()
     );
   };
 
@@ -33,7 +41,9 @@ class Messages extends React.Component {
     if (state.channel === null || props.currentChannel.id !== state.channel.id) {
       return {
         messages: [],
-        channel: props.currentChannel
+        channel: props.currentChannel,
+        uniqueUsers: '0 users',
+        isStarred: null
       };
     }
      else {
@@ -54,6 +64,33 @@ class Messages extends React.Component {
     this.detachListeners(this.state.listeners);
   }
 
+  getUserStars = () => {
+    this.state.usersRef
+      .child(this.props.currentUser.uid)
+      .once("value")
+      .then(data => {
+        console.log(data.val());
+      })
+      .catch(err => console.error(err));
+  };
+
+  starChannel = () => {
+    // this.state.usersRef
+    //   .child(this.props.currentUser.id)
+    //   .child("likes")
+    //   .push(1);
+    this.setState(
+      prevState => ({
+        isStarred: !prevState.isStarred
+      }),
+      () => this.unStarChannel()
+    );
+  };
+
+  unStarChannel = () => {
+    console.log("unstar");
+  };
+
   handleSearch = () => {
     const channelMessages = [...this.state.messages];
     const regex = new RegExp(this.state.searchTerm, "gi");
@@ -64,6 +101,7 @@ class Messages extends React.Component {
       return acc;
     }, []);
     this.setState({ searchResults });
+    setTimeout(() => this.setState({ searchLoading: false }), 1000);
   };
 
   countUniqueUsers = (messages = []) => {
@@ -78,7 +116,7 @@ class Messages extends React.Component {
   };
 
   addListeners = channelId => {
-    this.setState({ loading: false });
+    this.getUserStars();
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
       let messages = [snap.val(), ...this.state.messages];
@@ -141,7 +179,10 @@ class Messages extends React.Component {
       loading,
       searchTerm,
       searchResults,
-      uniqueUsers
+      searchFocused,
+      searchLoading,
+      uniqueUsers,
+      isStarred
     } = this.state;
 
     return (
@@ -149,7 +190,11 @@ class Messages extends React.Component {
         <MessagesHeader
           channel={this.getChannelName(channel)}
           handleSearchChange={this.handleSearchChange}
+          starChannel={this.starChannel}
           uniqueUsers={uniqueUsers}
+          searchFocused={searchFocused}
+          searchLoading={searchLoading}
+          isStarred={isStarred}
         />
         <Segment>
           <Comment.Group className="messages">
@@ -166,6 +211,7 @@ class Messages extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  currentUser: state.user.currentUser,
   currentChannel: state.channel.currentChannel,
   isPrivateChannel: state.channel.isPrivateChannel
 });

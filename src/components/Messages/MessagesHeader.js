@@ -2,25 +2,61 @@ import React from "react";
 import { connect } from "react-redux";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 
-const MessagesHeader = ({ channel, handleSearchChange, uniqueUsers }) => (
-  <Segment clearing>
-    <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
-      <span>
-        {channel} <Icon size="small" name="star outline" />
-      </span>
-      <Header.Subheader>{uniqueUsers}</Header.Subheader>
-    </Header>
-    <Header floated="right">
-      <Input
-        size="mini"
-        icon="search"
-        name="searchTerm"
-        placeholder="Search messages"
-        onChange={handleSearchChange}
-      />
-    </Header>
-  </Segment>
-);
+class MessagesHeader extends React.Component {
+  componentDidMount() {
+    window.addEventListener("keyup", this.focusSearchInput);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.focusSearchInput);
+  }
+
+  focusSearchInput = event => {
+    const isInput = document.activeElement.nodeName === "INPUT";
+    if (event.keyCode === 191 && !isInput) {
+      this.searchInputRef.focus();
+    }
+  };
+
+  render() {
+    const {
+      channel,
+      handleSearchChange,
+      uniqueUsers,
+      searchLoading,
+      starChannel,
+      isStarred
+    } = this.props;
+
+    return (
+      <Segment clearing>
+        <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
+          <span>
+            {channel}{" "}
+            <Icon
+              size="small"
+              name={isStarred ? "star" : "star outline"}
+              onClick={starChannel}
+              color={isStarred ? "yellow" : "black"}
+            />
+          </span>
+          <Header.Subheader>{uniqueUsers}</Header.Subheader>
+        </Header>
+        <Header floated="right">
+          <Input
+            loading={searchLoading}
+            ref={c => (this.searchInputRef = c)}
+            size="mini"
+            icon="search"
+            name="searchTerm"
+            placeholder="Search messages"
+            onChange={handleSearchChange}
+          />
+        </Header>
+      </Segment>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   currentChannel: state.channel.currentChannel
