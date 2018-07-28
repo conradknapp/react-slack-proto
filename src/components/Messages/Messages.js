@@ -74,7 +74,6 @@ class Messages extends React.Component {
       .then(data => {
         const channelIds = Object.keys(data.val());
         console.log(channelIds);
-        // console.log(data.val());
         const prevStarred = channelIds.includes(this.props.currentChannel.id);
         this.setState({ isStarred: prevStarred });
       })
