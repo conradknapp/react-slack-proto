@@ -21,22 +21,11 @@ class Starred extends Component {
   }
 
   addListener = () => {
-    // this.state.usersRef
-    //   .child(this.props.currentUser.uid)
-    //   .child("starred")
-    //   .on("child_removed", snap => {
-    //     console.log(snap.key, snap.val());
-    //     const starredChannel = { id: snap.key, name: snap.val() };
-    //     this.setState({
-    //       starredChannels: [...this.state.starredChannels, starredChannel]
-    //     });
-    //   });
     this.state.usersRef
       .child(this.props.currentUser.uid)
       .child("starred")
       .on("child_added", snap => {
-        console.log(snap.key, snap.val());
-        const starredChannel = { id: snap.key, name: snap.val() };
+        const starredChannel = { id: snap.key, ...snap.val() };
         this.setState({
           starredChannels: [...this.state.starredChannels, starredChannel]
         });
@@ -48,7 +37,7 @@ class Starred extends Component {
       .child(this.props.currentUser.uid)
       .child("starred")
       .on("child_removed", snap => {
-        const starredChannel = { id: snap.key, name: snap.val() };
+        const starredChannel = { id: snap.key, ...snap.val() };
         const filteredChannels = this.state.starredChannels.filter(
           el => el.id !== starredChannel.id
         );
@@ -94,7 +83,7 @@ class Starred extends Component {
       <Menu.Menu style={{ paddingBottom: "2em" }}>
         <Menu.Item>
           <span>
-            <Icon name="star" /> STARRED
+            <Icon name="star" /> STARRED ({starredChannels.length})
           </span>
         </Menu.Item>
         {this.displayChannels(starredChannels)}

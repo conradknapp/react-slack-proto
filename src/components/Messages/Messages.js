@@ -95,7 +95,14 @@ class Messages extends React.Component {
       this.state.usersRef
         .child(`${this.props.currentUser.uid}/starred`)
         .update({
-          [this.props.currentChannel.id]: this.props.currentChannel.name
+          [this.props.currentChannel.id]: {
+            name: this.props.currentChannel.name,
+            details: this.props.currentChannel.details,
+            createdBy: {
+              name: this.props.currentChannel.createdBy.name,
+              avatar: this.props.currentChannel.createdBy.avatar
+            }
+          }
         });
     } else {
       console.log("unstar");

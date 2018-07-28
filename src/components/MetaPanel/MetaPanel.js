@@ -29,7 +29,7 @@ class MetaPanel extends Component {
         <Header as="h3" attached="top">
           About # {currentChannel && currentChannel.name}
         </Header>
-        {/* <Accordion styled attached="true">
+        <Accordion styled attached="true">
           <Accordion.Title
             active={activeIndex === 0}
             index={0}
@@ -69,7 +69,7 @@ class MetaPanel extends Component {
             {currentChannel && <Image src={currentChannel.createdBy.avatar} />}
             {currentChannel && currentChannel.createdBy.name}
           </Accordion.Content>
-        </Accordion> */}
+        </Accordion>
       </Segment>
     );
   }
