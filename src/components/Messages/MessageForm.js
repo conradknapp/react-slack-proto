@@ -45,7 +45,7 @@ class MessageForm extends React.Component {
 
   closeModal = () => this.setState({ modal: false });
 
-  toggleEmojiPicker = event =>
+  toggleEmojiPicker = () =>
     this.setState({ emojiPicker: !this.state.emojiPicker });
 
   createMessage = (fileUrl = null) => {

@@ -138,16 +138,18 @@ class Messages extends React.Component {
   };
 
   addListeners = channelId => {
-    this.getUserStars();
+    let messages = [];
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
-      let messages = [snap.val(), ...this.state.messages];
+      messages.push(snap.val());
+      console.log(messages);
       this.countUniqueUsers(messages);
       this.setState({
         messages,
         loading: false
       });
     });
+    this.getUserStars();
     this.addToListeners(channelId, ref, "child_added");
   };
 

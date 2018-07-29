@@ -7,6 +7,7 @@ import { setCurrentChannel, setPrivateChannel } from "../../actions";
 
 class Channels extends React.Component {
   state = {
+    countNotifs: [],
     active: "",
     channels: [],
     channelName: "",
@@ -15,8 +16,7 @@ class Channels extends React.Component {
     modal: false,
     channelsRef: firebase.database().ref("channels"),
     messagesRef: firebase.database().ref("messages"),
-    initialLoad: true,
-    notificationCount: []
+    initialLoad: true
   };
 
   componentDidMount() {
@@ -28,17 +28,70 @@ class Channels extends React.Component {
   }
 
   addListeners = () => {
+    let channels = [];
     this.state.channelsRef.on("child_added", snap => {
-      // this.addCountListener(snap.key);
-      this.setState({ channels: [...this.state.channels, snap.val()] });
+      channels.push(snap.val());
+      this.setState({ channels });
       if (this.state.initialLoad && this.state.channels.length > 0) {
         this.props.setCurrentChannel(this.state.channels[0]);
       }
       this.setState({ initialLoad: false });
+
+      this.addCountListener(snap.key);
     });
   };
 
-  removeListeners = () => this.state.channelsRef.off();
+  addCountListener = channelId => {
+    this.state.messagesRef.child(channelId).on("value", snap => {
+      this.handleNotifications(
+        channelId,
+        this.props.currentChannel.id,
+        this.state.countNotifs,
+        snap
+      );
+    });
+  };
+
+  handleNotifications = (channelId, currentChannelId, notifCount, snap) => {
+    let lastTotal = 0;
+
+    let index = notifCount.findIndex(el => el.id === channelId);
+    if (index !== -1) {
+      if (channelId !== currentChannelId) {
+        lastTotal = notifCount[index].total;
+
+        if (snap.numChildren() - lastTotal > 0) {
+          notifCount[index].notif = snap.numChildren() - lastTotal;
+        }
+      }
+      notifCount[index].lastKnownTotal = snap.numChildren();
+    } else {
+      notifCount.push({
+        id: channelId,
+        total: snap.numChildren(),
+        lastKnownTotal: snap.numChildren(),
+        notif: 0
+      });
+    }
+    this.setState({ countNotifs: notifCount });
+  };
+
+  getNotifications = channel => {
+    let notif = 0;
+
+    this.state.countNotifs.forEach(el => {
+      if (el.id === channel.id) {
+        notif = el.notif;
+      }
+    });
+
+    if (notif > 0) return notif;
+  };
+
+  removeListeners = () => {
+    this.state.channelsRef.off();
+    this.state.messagesRef.off();
+  };
 
   addChannel = () => {
     const { channelsRef, channelName, channelDetails } = this.state;
@@ -109,7 +162,9 @@ class Channels extends React.Component {
         active={channel.id === this.state.active}
         //className={this.setActiveChannel(channel) ? "active" : ""}
       >
-        <Label color="red">2</Label>
+        {this.getNotifications(channel) && (
+          <Label color="red">{this.getNotifications(channel)}</Label>
+        )}
         # {channel.name}
       </Menu.Item>
     ));
