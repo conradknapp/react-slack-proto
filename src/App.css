@@ -1,7 +1,6 @@
-body > div,
-body > div > div,
-body > div > div > div.login-form,
-html {
+html,
+body,
+.app {
   height: 100vh;
   background: #eee;
 }
@@ -136,17 +135,30 @@ html {
   }
 }
 
-.skeleton__headline {
-  color: rgba(58, 57, 57, 0.3);
-  background: rgba(58, 57, 57, 0.3);
+.skeleton__avatar {
+  height: 35px;
+  width: 35px;
+  border-radius: 3px;
+  background-color: rgba(58, 57, 57, 0.3);
 }
 
-.skeleton__description {
-  color: rgba(58, 57, 57, 0.3);
-  background: rgba(58, 57, 57, 0.3);
-  min-height: 4em;
+.skeleton__author {
+  background-color: rgba(58, 57, 57, 0.3);
+  width: 120px;
+  height: 10px;
+  border-radius: 3px;
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 30px;
+  left: 40px;
   right: 0;
+}
+
+.skeleton__details {
+  background-color: rgba(58, 57, 57, 0.3);
+  height: 20px;
+  border-radius: 3px;
+  position: absolute;
+  bottom: 5px;
+  left: 40px;
+  right: 20px;
 }

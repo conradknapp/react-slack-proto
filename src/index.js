@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
@@ -10,12 +9,13 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import root_reducer from "./reducers";
 import { setUser } from "./actions";
 
+import Spinner from "./Spinner";
+
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 
 // Import Semantic UI Styles
 import "semantic-ui-css/semantic.min.css";
-import { Dimmer, Loader } from "semantic-ui-react";
 
 import firebase from "./firebase";
 
@@ -33,13 +33,11 @@ class WithAuthorization extends React.Component {
   }
 
   render() {
-    const { isAuthenticated, isLoading } = this.props;
+    const { isAuthenticated, isLoading, render } = this.props;
     return isLoading ? (
-      <Dimmer active>
-        <Loader size="big" />
-      </Dimmer>
+      <Spinner />
     ) : (
-      <React.Fragment>{this.props.render({ isAuthenticated })}</React.Fragment>
+      <React.Fragment>{render({ isAuthenticated })}</React.Fragment>
     );
   }
 }

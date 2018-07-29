@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
- Dropdown, Icon, Header, Segment, Image as Img, Modal, Input, Button, Message } from "semantic-ui-react";
+ Dropdown, Icon, Header, Segment, Image as Img, Modal, Input, Button, Message, Popup } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
 import AvatarEditor from "react-avatar-editor";
 
@@ -106,26 +106,35 @@ class UserPanel extends React.Component {
 
   render() {
     const { modal, errors, previewImage, croppedImage } = this.state;
-    // const { currentUser } = this.props;
+    const { currentUser } = this.props;
 
     return (
       <Segment clearing inverted style={{ backgroundColor: "#4c3c4c" }}>
-        <Header floated="left" as="h3">
+        <Header floated="left" as="h2">
+          DevChat
+        </Header>
+        <Header floated="right">
+          <Popup
+            trigger={
+              <Icon.Group>
+                <Icon name="bell outline" size="large" />
+                <Icon corner className="top right" name="circle" color="blue" />
+              </Icon.Group>
+            }
+            on="hover"
+            position="bottom center"
+          >
+            <Popup.Header>Notifications</Popup.Header>
+            <Popup.Content>hi</Popup.Content>
+          </Popup>
+        </Header>
+        <Header as="h4">
+          {/* <Icon name="circle" color="green" /> */}
           <Dropdown
-            trigger={<span>DevChat</span>}
+            trigger={<span>{currentUser.displayName}</span>}
             options={this.dropdownOptions()}
           />
         </Header>
-        <Header floated="right">
-          <Icon.Group>
-            <Icon name="bell outline" />
-            <Icon corner className="top right" name="circle" color="blue" />
-          </Icon.Group>
-        </Header>
-        {/* <Item>
-          {currentUser.displayName}
-          <Icon name="circle" color="green" />
-        </Item> */}
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a channel</Modal.Header>
           <Modal.Content>

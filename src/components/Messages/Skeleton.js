@@ -2,8 +2,9 @@ import React from "react";
 
 const Skeleton = () => (
   <div className="skeleton">
-    <span className="skeleton__headline" />
-    <span className="skeleton__description" />
+    <div className="skeleton__avatar" />
+    <div className="skeleton__author" />
+    <div className="skeleton__details" />
   </div>
 );
 

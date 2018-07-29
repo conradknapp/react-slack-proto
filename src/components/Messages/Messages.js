@@ -60,8 +60,6 @@ class Messages extends React.Component {
     }
   }
 
-  // componentDidMount() {}
-
   componentWillUnmount() {
     this.detachListeners(this.state.listeners);
   }
@@ -73,7 +71,6 @@ class Messages extends React.Component {
       .once("value")
       .then(data => {
         const channelIds = Object.keys(data.val());
-        console.log(channelIds);
         const prevStarred = channelIds.includes(this.props.currentChannel.id);
         this.setState({ isStarred: prevStarred });
       })
@@ -193,7 +190,7 @@ class Messages extends React.Component {
   displaySkeleton = loading =>
     loading ? (
       <React.Fragment>
-        {[...Array(10)].map((_, i) => <Skeleton key={i} />)}
+        {[...Array(15)].map((_, i) => <Skeleton key={i} />)}
       </React.Fragment>
     ) : null;
 

@@ -10,7 +10,7 @@ class MetaPanel extends Component {
     activeIndex: 0
   };
 
-  handleClick = (e, titleProps) => {
+  handleClick = (event, titleProps) => {
     const { index } = titleProps;
     const { activeIndex } = this.state;
     const newIndex = activeIndex === index ? -1 : index;

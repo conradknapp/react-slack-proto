@@ -46,74 +46,66 @@ class Login extends React.Component {
     const { email, password, errors, loading } = this.state;
 
     return (
-      <div className="login-form">
-        <Grid
-          textAlign="center"
-          style={{ height: "100%" }}
-          verticalAlign="middle"
-        >
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as="h1" icon color="violet" textAlign="center">
-              <Icon name="code branch" color="violet" />
-              Login to DevChat
-            </Header>
-            <Form size="large" onSubmit={this.loginUser} className="error">
-              <Segment stacked>
-                <Form.Input
-                  fluid
-                  name="email"
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="E-mail address"
-                  onChange={this.handleChange}
-                  value={email}
-                  className={
-                    errors.some(el => el.message.includes("email"))
-                      ? "error"
-                      : ""
-                  }
-                  autoComplete="email"
-                  required={true}
-                />
-                <Form.Input
-                  fluid
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Password"
-                  type="password"
-                  name="password"
-                  onChange={this.handleChange}
-                  value={password}
-                  className={
-                    errors.some(el => el.message.includes("password"))
-                      ? "error"
-                      : ""
-                  }
-                  autoComplete="password"
-                  required={true}
-                />
-                <Button
-                  color="violet"
-                  fluid
-                  size="large"
-                  className={loading ? "loading" : ""}
-                >
-                  Submit
-                </Button>
-              </Segment>
-            </Form>
-            {!!errors.length && (
-              <Message error>
-                <h3>Error</h3>
-                {this.displayErrors()}
-              </Message>
-            )}
-            <Message>
-              Don't have an account? <Link to="/register">Register</Link>
+      <Grid textAlign="center" verticalAlign="middle" className="app">
+        <Grid.Column style={{ maxWidth: 450 }}>
+          <Header as="h1" icon color="violet" textAlign="center">
+            <Icon name="code branch" color="violet" />
+            Login to DevChat
+          </Header>
+          <Form size="large" onSubmit={this.loginUser} className="error">
+            <Segment stacked>
+              <Form.Input
+                fluid
+                name="email"
+                icon="user"
+                iconPosition="left"
+                placeholder="E-mail address"
+                onChange={this.handleChange}
+                value={email}
+                className={
+                  errors.some(el => el.message.includes("email")) ? "error" : ""
+                }
+                autoComplete="email"
+                required={true}
+              />
+              <Form.Input
+                fluid
+                icon="lock"
+                iconPosition="left"
+                placeholder="Password"
+                type="password"
+                name="password"
+                onChange={this.handleChange}
+                value={password}
+                className={
+                  errors.some(el => el.message.includes("password"))
+                    ? "error"
+                    : ""
+                }
+                autoComplete="password"
+                required={true}
+              />
+              <Button
+                color="violet"
+                fluid
+                size="large"
+                className={loading ? "loading" : ""}
+              >
+                Submit
+              </Button>
+            </Segment>
+          </Form>
+          {!!errors.length && (
+            <Message error>
+              <h3>Error</h3>
+              {this.displayErrors()}
             </Message>
-          </Grid.Column>
-        </Grid>
-      </div>
+          )}
+          <Message>
+            Don't have an account? <Link to="/register">Register</Link>
+          </Message>
+        </Grid.Column>
+      </Grid>
     );
   }
 }

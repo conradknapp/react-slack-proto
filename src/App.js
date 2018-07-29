@@ -11,7 +11,7 @@ import MetaPanel from "./components/MetaPanel/MetaPanel";
 class App extends Component {
   render() {
     return (
-      <Grid columns="equal" style={{ padding: "1em" }}>
+      <Grid columns="equal" className="app" style={{ padding: "1em" }}>
         <ColorPanel />
         <SidePanel />
 
