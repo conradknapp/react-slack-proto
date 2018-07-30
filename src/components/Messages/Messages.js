@@ -141,8 +141,7 @@ class Messages extends React.Component {
     let messages = [];
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
-      messages.push(snap.val());
-      console.log(messages);
+      messages.unshift(snap.val());
       this.countUniqueUsers(messages);
       this.setState({
         messages,

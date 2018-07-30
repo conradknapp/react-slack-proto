@@ -9,6 +9,7 @@ class Channels extends React.Component {
   state = {
     countNotifs: [],
     active: "",
+    channel: null,
     channels: [],
     channelName: "",
     channelDetails: "",
@@ -34,6 +35,7 @@ class Channels extends React.Component {
       this.setState({ channels });
       if (this.state.initialLoad && this.state.channels.length > 0) {
         this.props.setCurrentChannel(this.state.channels[0]);
+        this.setState({ channel: this.state.channels[0] });
       }
       this.setState({ initialLoad: false });
 
@@ -90,7 +92,9 @@ class Channels extends React.Component {
 
   removeListeners = () => {
     this.state.channelsRef.off();
-    this.state.messagesRef.off();
+    this.state.channels.forEach(el => {
+      this.state.messagesRef.child(el.id).off();
+    });
   };
 
   addChannel = () => {
@@ -141,14 +145,26 @@ class Channels extends React.Component {
 
   closeModal = () => this.setState({ modal: false });
 
-  handleItemClick = channel => {
-    this.setState({ active: channel.id });
+  handleItemClick = channel => this.setState({ active: channel.id });
+
+  resetNotifications = () => {
+    let index = this.state.countNotifs.findIndex(
+      el => el.id === this.state.channel.id
+    );
+    if (index !== -1) {
+      let countNotifs = this.state.countNotifs;
+      countNotifs[index].total = this.state.countNotifs[index].lastKnownTotal;
+      countNotifs[index].notif = 0;
+      this.setState({ countNotifs });
+    }
   };
 
   changeChannel = channel => {
     this.handleItemClick(channel);
+    this.resetNotifications();
     this.props.setPrivateChannel(false);
     this.props.setCurrentChannel(channel);
+    this.setState({ channel });
   };
 
   displayChannels = channels =>
@@ -162,9 +178,10 @@ class Channels extends React.Component {
         active={channel.id === this.state.active}
         //className={this.setActiveChannel(channel) ? "active" : ""}
       >
-        {this.getNotifications(channel) && (
-          <Label color="red">{this.getNotifications(channel)}</Label>
-        )}
+        {this.getNotifications(channel) &&
+          channel.id !== this.props.currentChannel.id && (
+            <Label color="red">{this.getNotifications(channel)}</Label>
+          )}
         # {channel.name}
       </Menu.Item>
     ));
