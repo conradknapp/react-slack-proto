@@ -44,17 +44,12 @@ class MessageForm extends React.Component {
       this.state.typingRef
         .child(this.props.currentChannel.id)
         .child(this.props.currentUser.uid)
-        .set({
-          name: this.props.currentUser.displayName,
-          value: true
-        });
+        .set(this.props.currentUser.displayName);
     } else {
       this.state.typingRef
         .child(this.props.currentChannel.id)
         .child(this.props.currentUser.uid)
-        .update({
-          value: false
-        });
+        .remove();
     }
   };
 

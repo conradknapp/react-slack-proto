@@ -16,6 +16,7 @@ class Messages extends React.Component {
     privateMessagesRef: firebase.database().ref("privateMessages"),
     usersRef: firebase.database().ref("users"),
     typingRef: firebase.database().ref("isTyping"),
+    connectedRef: firebase.database().ref(".info/connected"),
     messages: [],
     listeners: [],
     channel: null,
@@ -142,20 +143,51 @@ class Messages extends React.Component {
   };
 
   addTypingListener = channelId => {
-    this.state.typingRef.child(channelId).on("value", snap => {
+    this.state.typingRef.on("value", snap => {
       if (snap.val()) {
-        if (channelId === snap.key) {
-          const typingUsers = Object.entries(snap.val())
-            .map(([key, val]) => {
-              if (key !== this.props.currentUser.uid) {
-                if (val.value === true) {
-                  return val;
-                }
-              }
-            })
-            .filter(el => el);
-          this.setState({ typingUsers });
+        const yourChannel = Object.keys(snap.val())
+          .filter(el => el === channelId)
+          .map(el => snap.val()[el])[0];
+
+        if (yourChannel) {
+          const filtered = Object.keys(yourChannel)
+            .filter(k => !k.includes(this.props.currentUser.uid))
+            .map(el => yourChannel[el]);
+          this.setState({ typingUsers: filtered });
+        } else {
+          this.setState({ typingUsers: [] });
         }
+      }
+    });
+
+    this.state.typingRef.on("child_removed", snap => {
+      if (snap.val()) {
+        const yourChannel = Object.keys(snap.val())
+          .filter(el => el === channelId)
+          .map(el => snap.val()[el])[0];
+
+        if (yourChannel) {
+          const filtered = Object.keys(yourChannel)
+            .filter(k => !k.includes(this.props.currentUser.uid))
+            .map(el => yourChannel[el]);
+          this.setState({ typingUsers: filtered });
+        } else {
+          this.setState({ typingUsers: [] });
+        }
+      }
+    });
+
+    this.state.connectedRef.on("value", snap => {
+      if (snap.val() === true) {
+        this.state.typingRef
+          .child(this.props.currentChannel.id)
+          .child(this.props.currentUser.uid)
+          .onDisconnect()
+          .remove(err => {
+            if (err !== null) {
+              console.error(err);
+            }
+          });
       }
     });
   };
@@ -220,9 +252,9 @@ class Messages extends React.Component {
 
   displayTypingUsers = typingUsers =>
     typingUsers.length > 0 &&
-    typingUsers.map(user => (
-      <React.Fragment>
-        {user.name} is typing...
+    typingUsers.map((user, i) => (
+      <React.Fragment key={i}>
+        {user} is typing...
         <Typing />
       </React.Fragment>
     ));

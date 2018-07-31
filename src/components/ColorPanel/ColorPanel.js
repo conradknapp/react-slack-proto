@@ -2,6 +2,7 @@ import React from "react";
 import firebase from "../../firebase";
 // prettier-ignore
 import { Sidebar, Menu, Divider, Modal, Input, Button, Icon, Message } from "semantic-ui-react";
+import { ChromePicker } from "react-color";
 
 import { connect } from "react-redux";
 import { setColors, resetColors } from "../../actions";
@@ -36,8 +37,9 @@ class ColorPanel extends React.Component {
 
   removeListener = () => {};
 
-  handleChange = event =>
-    this.setState({ [event.target.name]: event.target.value.trim() });
+  handleChangeComplete = color => {
+    this.setState({ primary: color.hex });
+  };
 
   openModal = () =>
     this.setState({ modal: true, primary: "", secondary: "", errors: [] });
@@ -45,7 +47,7 @@ class ColorPanel extends React.Component {
   closeModal = () => this.setState({ modal: false });
 
   handleSaveColors = () => {
-    if (this.state.primary && this.state.secondary) {
+    if (this.state.primary) {
       this.saveColors();
     } else {
       this.setState({
@@ -106,7 +108,7 @@ class ColorPanel extends React.Component {
     errors.map((error, i) => <p key={i}>{error.message}</p>);
 
   render() {
-    const { modal, errors, colors } = this.state;
+    const { modal, errors, colors, primary } = this.state;
 
     return (
       <Sidebar
@@ -121,9 +123,14 @@ class ColorPanel extends React.Component {
         <Button icon="add" size="small" color="blue" onClick={this.openModal} />
         {colors.length > 0 && this.displayColors(colors)}
         <Modal basic open={modal} onClose={this.closeModal}>
-          <Modal.Header>Choose App Colors (Hex or String)</Modal.Header>
+          <Modal.Header>Choose App Colors</Modal.Header>
           <Modal.Content>
-            <Input
+            {/* <ChromePicker name="primary" onChange={this.handleChange} /> */}
+            <ChromePicker
+              color={primary}
+              onChangeComplete={this.handleChangeComplete}
+            />
+            {/* <Input
               fluid
               type="text"
               label="Primary Color"
@@ -136,7 +143,7 @@ class ColorPanel extends React.Component {
               label="Secondary Color"
               name="secondary"
               onChange={this.handleChange}
-            />
+            /> */}
           </Modal.Content>
           <Modal.Actions>
             <Button color="green" inverted onClick={this.handleSaveColors}>
