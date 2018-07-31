@@ -8,6 +8,7 @@ import Message from "./Message";
 import MessageForm from "./MessageForm";
 import MessagesHeader from "./MessagesHeader";
 import Skeleton from "./Skeleton";
+import Typing from "./Typing";
 
 class Messages extends React.Component {
   state = {
@@ -24,7 +25,8 @@ class Messages extends React.Component {
     searchFocused: false,
     searchLoading: false,
     uniqueUsers: "",
-    isStarred: false
+    isStarred: false,
+    typingUsers: []
   };
 
   handleSearchChange = event => {
@@ -141,7 +143,20 @@ class Messages extends React.Component {
 
   addTypingListener = channelId => {
     this.state.typingRef.child(channelId).on("value", snap => {
-      console.log(snap.key);
+      if (snap.val()) {
+        if (channelId === snap.key) {
+          const typingUsers = Object.entries(snap.val())
+            .map(([key, val]) => {
+              if (key !== this.props.currentUser.uid) {
+                if (val.value === true) {
+                  return val;
+                }
+              }
+            })
+            .filter(el => el);
+          this.setState({ typingUsers });
+        }
+      }
     });
   };
 
@@ -203,6 +218,15 @@ class Messages extends React.Component {
       </React.Fragment>
     ) : null;
 
+  displayTypingUsers = typingUsers =>
+    typingUsers.length > 0 &&
+    typingUsers.map(user => (
+      <React.Fragment>
+        {user.name} is typing...
+        <Typing />
+      </React.Fragment>
+    ));
+
   render() {
     const {
       channel,
@@ -213,7 +237,8 @@ class Messages extends React.Component {
       searchFocused,
       searchLoading,
       uniqueUsers,
-      isStarred
+      isStarred,
+      typingUsers
     } = this.state;
 
     return (
@@ -229,6 +254,7 @@ class Messages extends React.Component {
         />
         <Segment>
           <Comment.Group className="messages">
+            {this.displayTypingUsers(typingUsers)}
             {this.displaySkeleton(loading)}
             {searchTerm
               ? this.displayMessages(searchResults)

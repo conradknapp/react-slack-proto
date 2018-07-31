@@ -22,9 +22,9 @@ class MessageForm extends React.Component {
     emojiPicker: false
   };
 
-  componentDidMount() {
-    this.messageInputRef.focus();
-  }
+  // componentDidMount() {
+  //   this.messageInputRef.focus();
+  // }
 
   componentWillUnmount() {
     if (this.state.uploadTask !== null) {
@@ -44,12 +44,17 @@ class MessageForm extends React.Component {
       this.state.typingRef
         .child(this.props.currentChannel.id)
         .child(this.props.currentUser.uid)
-        .set(true);
+        .set({
+          name: this.props.currentUser.displayName,
+          value: true
+        });
     } else {
       this.state.typingRef
         .child(this.props.currentChannel.id)
         .child(this.props.currentUser.uid)
-        .set(false);
+        .update({
+          value: false
+        });
     }
   };
 
