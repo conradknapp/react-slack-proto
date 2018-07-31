@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
- Dropdown, Icon, Header, Segment, Image as Img, Modal, Input, Button, Message, Popup } from "semantic-ui-react";
+ Dropdown, Icon, Header, Grid, Image as Img, Popup } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
-import AvatarEditor from "react-avatar-editor";
+// import AvatarEditor from "react-avatar-editor";
 
 class UserPanel extends React.Component {
   state = {
@@ -48,7 +48,7 @@ class UserPanel extends React.Component {
     this.props.history.push("/login");
   };
 
-  setEditorRef = editor => (this.editor = editor);
+  setEditorRef = node => (this.editor = node);
 
   changeAvatar = () => {
     const { croppedImage } = this.state;
@@ -105,37 +105,53 @@ class UserPanel extends React.Component {
   };
 
   render() {
-    const { modal, errors, previewImage, croppedImage } = this.state;
+    // const { modal, errors, previewImage, croppedImage } = this.state;
     const { currentUser, primaryColor } = this.props;
 
     return (
-      <Segment clearing inverted style={{ backgroundColor: primaryColor }}>
-        <Header floated="left" as="h2">
-          DevChat
-        </Header>
-        <Header floated="right">
-          <Popup
-            trigger={
-              <Icon.Group>
-                <Icon name="bell outline" size="large" />
-                <Icon corner className="top right" name="circle" color="blue" />
-              </Icon.Group>
-            }
-            on="hover"
-            position="bottom center"
-          >
-            <Popup.Header>Notifications</Popup.Header>
-            <Popup.Content>hi</Popup.Content>
-          </Popup>
-        </Header>
-        <Header as="h4">
-          {/* <Icon name="circle" color="green" /> */}
-          <Dropdown
-            trigger={<span>{currentUser.displayName}</span>}
-            options={this.dropdownOptions()}
-          />
-        </Header>
-        <Modal basic open={modal} onClose={this.closeModal}>
+      <Grid inverted style={{ backgroundColor: primaryColor }}>
+        <Grid.Column>
+          <Grid.Row className="user__panel--row">
+            <Header inverted floated="left" as="h2">
+              DevChat
+            </Header>
+            <Header floated="right">
+              <Popup
+                trigger={
+                  <Icon.Group>
+                    <Icon name="bell outline" inverted size="large" />
+                    <Icon
+                      corner
+                      className="top right"
+                      name="circle"
+                      color="blue"
+                    />
+                  </Icon.Group>
+                }
+                on="click"
+                position="bottom center"
+              >
+                <Popup.Header>Notifications</Popup.Header>
+                <Popup.Content>hi</Popup.Content>
+              </Popup>
+            </Header>
+          </Grid.Row>
+
+          <Grid.Row className="user__panel--row">
+            <Header as="h4" inverted>
+              {/* <Icon name="circle" color="green" /> */}
+              <Dropdown
+                trigger={
+                  <span>
+                    <Img src={currentUser.photoURL} avatar />
+                    {currentUser.displayName}
+                  </span>
+                }
+                options={this.dropdownOptions()}
+              />
+            </Header>
+          </Grid.Row>
+          {/* <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Add a channel</Modal.Header>
           <Modal.Content>
             <Input
@@ -176,8 +192,9 @@ class UserPanel extends React.Component {
               <Icon name="remove" /> Cancel
             </Button>
           </Modal.Actions>
-        </Modal>
-      </Segment>
+        </Modal> */}
+        </Grid.Column>
+      </Grid>
     );
   }
 }

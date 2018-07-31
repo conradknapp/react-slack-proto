@@ -19,7 +19,8 @@ class MessageForm extends React.Component {
     percentUploaded: 0,
     storageRef: firebase.storage().ref(),
     typingRef: firebase.database().ref("isTyping"),
-    emojiPicker: false
+    emojiPicker: false,
+    loading: false
   };
 
   // componentDidMount() {
@@ -81,12 +82,13 @@ class MessageForm extends React.Component {
     const { currentChannel, currentUser, getMessagesRef } = this.props;
 
     if (this.state.message) {
+      this.setState({ loading: true });
       getMessagesRef()
         .child(currentChannel.id)
         .push()
         .set(this.createMessage())
         .then(() => {
-          this.setState({ message: "", errors: [] });
+          this.setState({ message: "", errors: [], loading: false });
           this.state.typingRef
             .child(currentChannel.id)
             .child(currentUser.uid)
@@ -95,6 +97,7 @@ class MessageForm extends React.Component {
         .catch(err => {
           console.error(err);
           this.setState({
+            loading: false,
             errors: [...this.state.errors, { message: err.message }]
           });
         });
@@ -210,7 +213,8 @@ class MessageForm extends React.Component {
       percentUploaded,
       uploadState,
       emojiPicker,
-      errors
+      errors,
+      loading
     } = this.state;
 
     return (
@@ -252,6 +256,7 @@ class MessageForm extends React.Component {
             labelPosition="left"
             icon="edit"
             onClick={this.sendMessage}
+            disabled={loading}
           />
           <Button
             color="teal"

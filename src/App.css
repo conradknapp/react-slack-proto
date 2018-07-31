@@ -187,3 +187,10 @@ body,
   height: 35px;
   transform: rotate(225deg);
 }
+
+/* UserPanel.js */
+
+.user__panel--row {
+  margin: 0;
+  padding: 1em;
+}
