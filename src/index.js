@@ -72,17 +72,22 @@ const PrivateRoute = ({ component: Component, isAuthenticated, ...rest }) => (
 );
 
 const Root = () => (
-  // <WithAuthorization
-  //   render={({ isAuthenticated }) => (
-  <Router>
-    <React.Fragment>
-      <Route exact path="/" component={App} />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
-    </React.Fragment>
-  </Router>
-  //   )}
-  // />
+  <WithAuthorization
+    render={({ isAuthenticated }) => (
+      <Router>
+        <React.Fragment>
+          <PrivateRoute
+            exact
+            path="/"
+            component={App}
+            isAuthenticated={isAuthenticated}
+          />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+        </React.Fragment>
+      </Router>
+    )}
+  />
 );
 
 ReactDOM.render(

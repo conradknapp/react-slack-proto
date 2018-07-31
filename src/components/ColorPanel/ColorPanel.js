@@ -1,8 +1,8 @@
 import React from "react";
 import firebase from "../../firebase";
 // prettier-ignore
-import { Sidebar, Menu, Divider, Modal, Input, Button, Icon, Message } from "semantic-ui-react";
-import { ChromePicker } from "react-color";
+import { Sidebar, Menu, Divider, Modal, Button, Icon, Message, Label } from "semantic-ui-react";
+import { SliderPicker } from "react-color";
 
 import { connect } from "react-redux";
 import { setColors, resetColors } from "../../actions";
@@ -37,9 +37,9 @@ class ColorPanel extends React.Component {
 
   removeListener = () => {};
 
-  handleChangeComplete = color => {
-    this.setState({ primary: color.hex });
-  };
+  handleChangePrimary = color => this.setState({ primary: color.hex });
+
+  handleChangeSecondary = color => this.setState({ secondary: color.hex });
 
   openModal = () =>
     this.setState({ modal: true, primary: "", secondary: "", errors: [] });
@@ -93,14 +93,6 @@ class ColorPanel extends React.Component {
             />
           </div>
         </div>
-        {/* <div
-          className="color__preview"
-          style={{
-            display: 'inline-block',
-            borderTop: `35px solid ${color.primary}`,
-            borderBottom: `35px solid ${color.secondary}`,
-          }}
-        /> */}
       </React.Fragment>
     ));
 
@@ -108,7 +100,7 @@ class ColorPanel extends React.Component {
     errors.map((error, i) => <p key={i}>{error.message}</p>);
 
   render() {
-    const { modal, errors, colors, primary } = this.state;
+    const { modal, errors, colors, primary, secondary } = this.state;
 
     return (
       <Sidebar
@@ -125,25 +117,16 @@ class ColorPanel extends React.Component {
         <Modal basic open={modal} onClose={this.closeModal}>
           <Modal.Header>Choose App Colors</Modal.Header>
           <Modal.Content>
-            {/* <ChromePicker name="primary" onChange={this.handleChange} /> */}
-            <ChromePicker
+            <Label content="Primary Color" />
+            <SliderPicker
               color={primary}
-              onChangeComplete={this.handleChangeComplete}
+              onChangeComplete={this.handleChangePrimary}
             />
-            {/* <Input
-              fluid
-              type="text"
-              label="Primary Color"
-              name="primary"
-              onChange={this.handleChange}
+            <Label content="Secondary Color" />
+            <SliderPicker
+              color={secondary}
+              onChangeComplete={this.handleChangeSecondary}
             />
-            <Input
-              fluid
-              type="text"
-              label="Secondary Color"
-              name="secondary"
-              onChange={this.handleChange}
-            /> */}
           </Modal.Content>
           <Modal.Actions>
             <Button color="green" inverted onClick={this.handleSaveColors}>
@@ -160,21 +143,6 @@ class ColorPanel extends React.Component {
             </Message>
           )}
         </Modal>
-        {/* <Image
-          onClick={() => this.props.setColors("blue", "green")}
-          style={{ width: "30px" }}
-          src="https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.titanui.com%2Fwp-content%2Fuploads%2F2016%2F07%2F17%2FFresh-Blurry-Gradient-Background-Vector-150x150.png&f=1"
-        />
-        <Divider />
-        <Image
-          style={{ width: "30px" }}
-          src="https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fonlineteachingtoolkit.com%2Fwp-content%2Fuploads%2F2013%2F07%2Fred-black-gradient-150x150.jpg&f=1"
-        />
-        <Divider />
-        <Image
-          style={{ width: "30px" }}
-          src="https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fonlineteachingtoolkit.com%2Fwp-content%2Fuploads%2F2013%2F07%2Fblue-black-gradient-150x150.jpg&f=1"
-        /> */}
       </Sidebar>
     );
   }

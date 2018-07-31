@@ -106,10 +106,10 @@ class UserPanel extends React.Component {
 
   render() {
     const { modal, errors, previewImage, croppedImage } = this.state;
-    const { currentUser } = this.props;
+    const { currentUser, primaryColor } = this.props;
 
     return (
-      <Segment clearing inverted style={{ backgroundColor: "#4c3c4c" }}>
+      <Segment clearing inverted style={{ backgroundColor: primaryColor }}>
         <Header floated="left" as="h2">
           DevChat
         </Header>
@@ -183,7 +183,8 @@ class UserPanel extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+  currentUser: state.user.currentUser,
+  primaryColor: state.color.primaryColor
 });
 
 export default withRouter(

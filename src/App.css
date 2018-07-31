@@ -4,55 +4,6 @@ body,
   height: 100vh;
   background: #eee;
 }
-/*
-.channels__list {
-  min-height: 100px;
-  max-height: 300px !important;
-  overflow-y: auto !important;
-}
-
-.comment__container pre {
-  font-size: 0.9rem;
-  background: #232323;
-  box-shadow: 3px 6px 9px 0px #a2a2a2;
-}
-
-.comment__self {
-  border-left: 2px solid orange;
-  padding-left: 8px;
-}
-
-.comment__date {
-  color: #767676;
-}
-
-.users__container .feed:hover,
-.users__container .feed.is_active {
-  background: #654439;
-}
-
-.fade-enter {
-  opacity: 0.01;
-}
-
-.fade-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-
-.fade-exit {
-  opacity: 1;
-}
-
-.fade-exit-active {
-  opacity: 0.01;
-  transition: opacity 500ms ease-in;
-}*/
-
-/* .messages__container {
-  position: relative;
-  height: 450px;
-} */
 
 /* MessagesForm.js */
 
@@ -98,9 +49,6 @@ body,
 }
 
 .typing {
-  /* position: fixed;
-  top: 50%;
-  left: 50%; */
   width: 5em;
   height: 2em;
   position: relative;
