@@ -37,7 +37,7 @@ class MessageForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
 
   handleKeyDown = event => {
-    if (event.keyCode === 13 && event.ctrlKey) {
+    if (event.ctrlKey && event.keyCode === 13) {
       this.sendMessage();
     }
     if (this.state.message) {
@@ -80,23 +80,29 @@ class MessageForm extends React.Component {
   sendMessage = () => {
     const { currentChannel, currentUser, getMessagesRef } = this.props;
 
-    getMessagesRef()
-      .child(currentChannel.id)
-      .push()
-      .set(this.createMessage())
-      .then(() => {
-        this.setState({ message: "" });
-        this.state.typingRef
-          .child(currentChannel.id)
-          .child(currentUser.uid)
-          .remove();
-      })
-      .catch(err => {
-        console.error(err);
-        this.setState({
-          errors: [...this.state.errors, { message: err.message }]
+    if (this.state.message) {
+      getMessagesRef()
+        .child(currentChannel.id)
+        .push()
+        .set(this.createMessage())
+        .then(() => {
+          this.setState({ message: "", errors: [] });
+          this.state.typingRef
+            .child(currentChannel.id)
+            .child(currentUser.uid)
+            .remove();
+        })
+        .catch(err => {
+          console.error(err);
+          this.setState({
+            errors: [...this.state.errors, { message: err.message }]
+          });
         });
+    } else {
+      this.setState({
+        errors: [...this.state.errors, { message: "Add a message " }]
       });
+    }
   };
 
   uploadFile = (file, metadata) => {
@@ -203,7 +209,8 @@ class MessageForm extends React.Component {
       message,
       percentUploaded,
       uploadState,
-      emojiPicker
+      emojiPicker,
+      errors
     } = this.state;
 
     return (
@@ -220,8 +227,11 @@ class MessageForm extends React.Component {
         <Input
           fluid
           ref={c => (this.messageInputRef = c)}
-          className="messages__form--input"
+          className={
+            errors.some(el => el.message.includes("message")) ? "error" : ""
+          }
           name="message"
+          style={{ marginBottom: "0.7em" }}
           onKeyDown={this.handleKeyDown}
           onChange={this.handleChange}
           label={
@@ -237,7 +247,6 @@ class MessageForm extends React.Component {
         />
         <Button.Group icon widths="2">
           <Button
-            disabled={!message}
             color="orange"
             content="Add Reply"
             labelPosition="left"

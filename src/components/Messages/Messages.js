@@ -2,7 +2,8 @@ import React from "react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
 // prettier-ignore
-import { Segment, Comment } from "semantic-ui-react";
+import { Segment, Comment, Button } from "semantic-ui-react";
+import { animateScroll } from "react-scroll";
 
 import Message from "./Message";
 import MessageForm from "./MessageForm";
@@ -227,6 +228,11 @@ class Messages extends React.Component {
     });
   };
 
+  scrollToTop = () =>
+    animateScroll.scrollToTop({
+      containerId: "messages"
+    });
+
   getMessagesRef = () => {
     const { messagesRef, privateMessagesRef } = this.state;
     return this.props.isPrivateChannel ? privateMessagesRef : messagesRef;
@@ -285,7 +291,13 @@ class Messages extends React.Component {
           isStarred={isStarred}
         />
         <Segment>
-          <Comment.Group className="messages">
+          <Comment.Group className="messages" id="messages">
+            <Button
+              onClick={this.scrollToTop}
+              circular
+              icon="arrow up"
+              className="up__button"
+            />
             {this.displayTypingUsers(typingUsers)}
             {this.displaySkeleton(loading)}
             {searchTerm

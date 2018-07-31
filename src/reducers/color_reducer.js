@@ -2,7 +2,7 @@ import * as actionTypes from "../actions/types";
 
 const initialState = {
   primaryColor: "#4c3c4c",
-  secondaryColor: "green"
+  secondaryColor: "#eee"
 };
 
 export default (state = initialState, action) => {

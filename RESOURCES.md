@@ -10,3 +10,5 @@ https://stackoverflow.com/questions/497094/how-do-i-find-out-which-dom-element-h
 https://stackoverflow.com/questions/29819502/how-to-make-half-square-background-in-css
 https://codepen.io/stezu/pen/LiAjp
 https://codepen.io/ericmatthys/pen/FfcEL
+https://stackoverflow.com/questions/8508275/how-to-center-a-position-absolute-element
+https://stackoverflow.com/questions/45719909/scroll-to-bottom-of-an-overflowing-div-in-react

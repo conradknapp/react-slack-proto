@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import { connect } from "react-redux";
 
 import { Grid } from "semantic-ui-react";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,14 +14,21 @@ class App extends React.Component {
   componentDidMount() {
     this.notify();
   }
+
   notify = () =>
     toast("You are now logged in!", {
       position: toast.POSITION.BOTTOM_LEFT
     });
 
   render() {
+    const { secondaryColor } = this.props;
+
     return (
-      <Grid columns="equal" className="app" style={{ padding: "1em" }}>
+      <Grid
+        columns="equal"
+        className="app"
+        style={{ background: secondaryColor }}
+      >
         <ColorPanel />
         <SidePanel />
 
@@ -37,4 +45,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  secondaryColor: state.color.secondaryColor
+});
+
+export default connect(mapStateToProps)(App);
