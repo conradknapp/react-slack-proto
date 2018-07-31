@@ -37,3 +37,19 @@ export const setPrivateChannel = isPrivateChannel => {
     }
   };
 };
+
+export const setColors = (primaryColor, secondaryColor) => {
+  return {
+    type: actionTypes.SET_COLORS,
+    payload: {
+      primaryColor,
+      secondaryColor
+    }
+  };
+};
+
+export const resetColors = () => {
+  return {
+    type: actionTypes.RESET_COLORS
+  };
+};

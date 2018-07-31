@@ -18,6 +18,7 @@ class MessageForm extends React.Component {
     uploadState: null,
     percentUploaded: 0,
     storageRef: firebase.storage().ref(),
+    typingRef: firebase.database().ref("isTyping"),
     emojiPicker: false
   };
 
@@ -38,6 +39,17 @@ class MessageForm extends React.Component {
   handleKeyDown = event => {
     if (event.keyCode === 13 && event.ctrlKey) {
       this.sendMessage();
+    }
+    if (this.state.message) {
+      this.state.typingRef
+        .child(this.props.currentChannel.id)
+        .child(this.props.currentUser.uid)
+        .set(true);
+    } else {
+      this.state.typingRef
+        .child(this.props.currentChannel.id)
+        .child(this.props.currentUser.uid)
+        .set(false);
     }
   };
 
@@ -66,7 +78,7 @@ class MessageForm extends React.Component {
   };
 
   sendMessage = () => {
-    const { currentChannel, getMessagesRef } = this.props;
+    const { currentChannel, currentUser, getMessagesRef } = this.props;
 
     getMessagesRef()
       .child(currentChannel.id)
@@ -74,6 +86,10 @@ class MessageForm extends React.Component {
       .set(this.createMessage())
       .then(() => {
         this.setState({ message: "" });
+        this.state.typingRef
+          .child(currentChannel.id)
+          .child(currentUser.uid)
+          .remove();
       })
       .catch(err => {
         console.error(err);
@@ -221,6 +237,7 @@ class MessageForm extends React.Component {
         />
         <Button.Group icon widths="2">
           <Button
+            disabled={!message}
             color="orange"
             content="Add Reply"
             labelPosition="left"

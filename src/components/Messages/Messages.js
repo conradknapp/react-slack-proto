@@ -14,6 +14,7 @@ class Messages extends React.Component {
     messagesRef: firebase.database().ref("messages"),
     privateMessagesRef: firebase.database().ref("privateMessages"),
     usersRef: firebase.database().ref("users"),
+    typingRef: firebase.database().ref("isTyping"),
     messages: [],
     listeners: [],
     channel: null,
@@ -57,6 +58,7 @@ class Messages extends React.Component {
     if ((channel.id && !prevState.channel) || (channel.id !== prevState.channel.id)) {
       this.detachListeners(listeners);
       this.addListeners(channel.id);
+      this.addTypingListener(channel.id);
     }
   }
 
@@ -135,6 +137,12 @@ class Messages extends React.Component {
     }, []);
     const uniqueUsers = `${users.length} user${users.length > 1 ? "s" : ""}`;
     this.setState({ uniqueUsers });
+  };
+
+  addTypingListener = channelId => {
+    this.state.typingRef.child(channelId).on("value", snap => {
+      console.log(snap.key);
+    });
   };
 
   addListeners = channelId => {

@@ -7,3 +7,4 @@ https://www.valentinog.com/blog/react-redux-tutorial-beginners/
 https://stackoverflow.com/questions/30452263/is-there-a-mechanism-to-loop-x-times-in-es6-ecmascript-6-without-mutable-varia
 https://stackoverflow.com/questions/16006583/capturing-ctrlz-key-combination-in-javascript
 https://stackoverflow.com/questions/497094/how-do-i-find-out-which-dom-element-has-the-focus
+https://stackoverflow.com/questions/29819502/how-to-make-half-square-background-in-css

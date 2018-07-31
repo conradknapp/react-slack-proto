@@ -16,6 +16,7 @@ import Register from "./components/Auth/Register";
 
 // Import Semantic UI Styles
 import "semantic-ui-css/semantic.min.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import firebase from "./firebase";
 
@@ -80,7 +81,7 @@ const Root = () => (
       <Route path="/register" component={Register} />
     </React.Fragment>
   </Router>
-  // )}
+  //   )}
   // />
 );
 
