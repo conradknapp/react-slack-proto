@@ -12,3 +12,4 @@ https://codepen.io/stezu/pen/LiAjp
 https://codepen.io/ericmatthys/pen/FfcEL
 https://stackoverflow.com/questions/8508275/how-to-center-a-position-absolute-element
 https://stackoverflow.com/questions/45719909/scroll-to-bottom-of-an-overflowing-div-in-react
+https://stackoverflow.com/questions/38114715/how-to-reveal-a-react-component-on-scroll

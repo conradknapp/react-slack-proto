@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
- Dropdown, Icon, Header, Grid, Image as Img, Popup } from "semantic-ui-react";
+ Dropdown, Icon, Header, Grid, Image as Img, Popup, Modal, Input, Message, Button } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
-// import AvatarEditor from "react-avatar-editor";
+import AvatarEditor from "react-avatar-editor";
 
 class UserPanel extends React.Component {
   state = {
@@ -59,7 +59,7 @@ class UserPanel extends React.Component {
       })
       .then(() => {
         console.log("avatar updated");
-        //this.closeModal();
+        this.closeModal();
       })
       .catch(err => {
         console.error(err);
@@ -97,15 +97,17 @@ class UserPanel extends React.Component {
 
   onClickSave = () => {
     if (this.editor) {
-      const canvasScaled = this.editor
-        .getImageScaledToCanvas()
-        .toDataURL("image/jpeg");
-      this.setState({ croppedImage: canvasScaled });
+      this.editor.getImageScaledToCanvas().toBlob(blob => {
+        let imageUrl = URL.createObjectURL(blob);
+        this.setState({
+          croppedImage: imageUrl
+        });
+      });
     }
   };
 
   render() {
-    // const { modal, errors, previewImage, croppedImage } = this.state;
+    const { modal, errors, previewImage, croppedImage } = this.state;
     const { currentUser, primaryColor } = this.props;
 
     return (
@@ -151,48 +153,48 @@ class UserPanel extends React.Component {
               />
             </Header>
           </Grid.Row>
-          {/* <Modal basic open={modal} onClose={this.closeModal}>
-          <Modal.Header>Add a channel</Modal.Header>
-          <Modal.Content>
-            <Input
-              fluid
-              type="file"
-              label="New Avatar"
-              name=""
-              onChange={this.handleChange}
-            />
-            {previewImage && (
-              <AvatarEditor
-                ref={this.setEditorRef}
-                image={previewImage}
-                width={50}
-                height={50}
-                border={50}
-                scale={1.2}
+          <Modal basic open={modal} onClose={this.closeModal}>
+            <Modal.Header>Add a channel</Modal.Header>
+            <Modal.Content>
+              <Input
+                fluid
+                type="file"
+                label="New Avatar"
+                name="previewImage"
+                onChange={this.handleChange}
               />
-            )}
-            {croppedImage && <Img src={croppedImage} />}
-            {errors.length > 0 && (
-              <Message color="red">
-                <h3>Error</h3>
-                {this.displayErrors(errors)}
-              </Message>
-            )}
-          </Modal.Content>
-          <Modal.Actions>
-            {croppedImage && (
-              <Button color="green" inverted onClick={this.changeAvatar}>
-                <Icon name="checkmark" /> Change Avatar
+              {previewImage && (
+                <AvatarEditor
+                  ref={this.setEditorRef}
+                  image={previewImage}
+                  width={100}
+                  height={100}
+                  border={50}
+                  scale={1.2}
+                />
+              )}
+              {croppedImage && <Img src={croppedImage} />}
+              {errors.length > 0 && (
+                <Message color="red">
+                  <h3>Error</h3>
+                  {this.displayErrors(errors)}
+                </Message>
+              )}
+            </Modal.Content>
+            <Modal.Actions>
+              {croppedImage && (
+                <Button color="green" inverted onClick={this.changeAvatar}>
+                  <Icon name="checkmark" /> Change Avatar
+                </Button>
+              )}
+              <Button color="green" inverted onClick={this.onClickSave}>
+                <Icon name="checkmark" /> Preview
               </Button>
-            )}
-            <Button color="green" inverted onClick={this.onClickSave}>
-              <Icon name="checkmark" /> Preview
-            </Button>
-            <Button basic color="red" inverted onClick={this.closeModal}>
-              <Icon name="remove" /> Cancel
-            </Button>
-          </Modal.Actions>
-        </Modal> */}
+              <Button basic color="red" inverted onClick={this.closeModal}>
+                <Icon name="remove" /> Cancel
+              </Button>
+            </Modal.Actions>
+          </Modal>
         </Grid.Column>
       </Grid>
     );
