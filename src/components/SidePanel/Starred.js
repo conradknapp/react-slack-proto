@@ -80,7 +80,7 @@ class Starred extends Component {
     const { starredChannels } = this.state;
 
     return (
-      <Menu.Menu style={{ paddingBottom: "2em" }}>
+      <Menu.Menu className="menu">
         <Menu.Item>
           <span>
             <Icon name="star" /> STARRED ({starredChannels.length})

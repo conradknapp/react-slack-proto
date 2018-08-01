@@ -2,7 +2,7 @@ html,
 body,
 .app {
   height: 100vh;
-  /* background: #eee; */
+  background: #eee;
   padding: 1em;
 }
 
@@ -43,6 +43,12 @@ body,
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
+}
+
+/* SidePanel */
+
+.menu {
+  padding-bottom: 2em;
 }
 
 /* Message.js */
