@@ -20,7 +20,7 @@ class MetaPanel extends Component {
 
   render() {
     const { activeIndex } = this.state;
-    const { currentChannel, isPrivateChannel } = this.props;
+    const { currentChannel, isPrivateChannel, topUsers } = this.props;
 
     if (isPrivateChannel) return null;
 
@@ -53,7 +53,16 @@ class MetaPanel extends Component {
             Members
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 1}>
-            <p>Doug Jeff Fred</p>
+            {topUsers &&
+              Object.entries(topUsers)
+                .sort((a, b) => b[1] - a[1])
+                .map(([key, val], i) => {
+                  return (
+                    <li key={i}>
+                      {key}: {val} posts
+                    </li>
+                  );
+                })}
           </Accordion.Content>
 
           <Accordion.Title
@@ -77,7 +86,8 @@ class MetaPanel extends Component {
 
 const mapStateToProps = state => ({
   currentChannel: state.channel.currentChannel,
-  isPrivateChannel: state.channel.isPrivateChannel
+  isPrivateChannel: state.channel.isPrivateChannel,
+  topUsers: state.channel.topUsers
 });
 
 export default connect(mapStateToProps)(MetaPanel);

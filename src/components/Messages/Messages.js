@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { Segment, Comment, Button } from "semantic-ui-react";
 import { animateScroll } from "react-scroll";
 
+import { setTopUsers } from "../../actions";
+
 import Message from "./Message";
 import MessageForm from "./MessageForm";
 import MessagesHeader from "./MessagesHeader";
@@ -194,15 +196,16 @@ class Messages extends React.Component {
   };
 
   countTopUsers = messages => {
-    messages.reduce((acc, message) => {
-      if (message.user.name in acc) {
-        acc[message.user.name] += 1;
-      } else {
-        acc[message.user.name] = 1;
-      }
-      console.log(acc);
-      return acc;
-    }, {});
+      let topUsers = messages.reduce((acc, message) => {
+        if (message.user.name in acc) {
+          acc[message.user.name] += 1;
+        } else {
+          acc[message.user.name] = 1;
+        }
+        return acc;
+      }, {});
+      console.log(topUsers);
+      this.props.setTopUsers(topUsers);
   };
 
   addListeners = channelId => {
@@ -210,8 +213,8 @@ class Messages extends React.Component {
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
       messages.unshift(snap.val());
-      this.countTopUsers(messages);
       this.countUniqueUsers(messages);
+      this.countTopUsers(messages);
       this.setState({
         messages,
         loading: false
@@ -274,10 +277,9 @@ class Messages extends React.Component {
   displayTypingUsers = typingUsers =>
     typingUsers.length > 0 &&
     typingUsers.map((user, i) => (
-      <React.Fragment key={i}>
-        {user} is typing...
-        <Typing />
-      </React.Fragment>
+      <div style={{ display: "flex", alignItems: "center" }} key={i}>
+        <span className="user__typing">{user}</span> is typing <Typing />
+      </div>
     ));
 
   render() {
@@ -332,4 +334,7 @@ const mapStateToProps = state => ({
   isPrivateChannel: state.channel.isPrivateChannel
 });
 
-export default connect(mapStateToProps)(Messages);
+export default connect(
+  mapStateToProps,
+  { setTopUsers }
+)(Messages);

@@ -1,5 +1,6 @@
 import * as actionTypes from "./types";
 
+/* User Actions */
 export const setUser = (user, isAuthenticated = true) => {
   return {
     type: actionTypes.SET_USER,
@@ -20,6 +21,7 @@ export const logoutUser = () => {
   };
 };
 
+/* Channel Actions */
 export const setCurrentChannel = channel => {
   return {
     type: actionTypes.SET_CURRENT_CHANNEL,
@@ -38,6 +40,16 @@ export const setPrivateChannel = isPrivateChannel => {
   };
 };
 
+export const setTopUsers = topUsers => {
+  return {
+    type: actionTypes.SET_TOP_USERS,
+    payload: {
+      topUsers
+    }
+  };
+};
+
+/* Color Actions */
 export const setColors = (primaryColor, secondaryColor) => {
   return {
     type: actionTypes.SET_COLORS,

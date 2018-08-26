@@ -14,7 +14,13 @@ class UserPanel extends React.Component {
     errors: [],
     previewImage: "",
     croppedImage: "",
-    userRef: firebase.auth().currentUser
+    uploadedImageURL: "",
+    blob: null,
+    userRef: firebase.auth().currentUser,
+    storageRef: firebase.storage().ref(),
+    metadata: {
+      contentType: "image/jpeg"
+    }
   };
 
   dropdownOptions = () => [
@@ -46,14 +52,25 @@ class UserPanel extends React.Component {
     this.props.history.push("/login");
   };
 
-  setEditorRef = node => (this.editor = node);
+  uploadAvatar = () => {
+    const { storageRef, userRef, metadata, blob } = this.state;
+
+    storageRef
+      .child(`avatars/${userRef.uid}`)
+      .put(blob, metadata)
+      .then(snap => {
+        snap.ref.getDownloadURL().then(downloadURL => {
+          this.setState({ uploadedImageURL: downloadURL }, () =>
+            this.changeAvatar()
+          );
+        });
+      });
+  };
 
   changeAvatar = () => {
-    const { croppedImage } = this.state;
-
     this.state.userRef
       .updateProfile({
-        photoURL: croppedImage
+        photoURL: this.state.uploadedImageURL
       })
       .then(() => {
         console.log("avatar updated");
@@ -98,7 +115,8 @@ class UserPanel extends React.Component {
       this.editor.getImageScaledToCanvas().toBlob(blob => {
         let imageUrl = URL.createObjectURL(blob);
         this.setState({
-          croppedImage: imageUrl
+          croppedImage: imageUrl,
+          blob
         });
       });
     }
@@ -141,7 +159,7 @@ class UserPanel extends React.Component {
               />
               {previewImage && (
                 <AvatarEditor
-                  ref={this.setEditorRef}
+                  ref={node => (this.editor = node)}
                   image={previewImage}
                   width={100}
                   height={100}
@@ -159,7 +177,7 @@ class UserPanel extends React.Component {
             </Modal.Content>
             <Modal.Actions>
               {croppedImage && (
-                <Button color="green" inverted onClick={this.changeAvatar}>
+                <Button color="green" inverted onClick={this.uploadAvatar}>
                   <Icon name="checkmark" /> Change Avatar
                 </Button>
               )}

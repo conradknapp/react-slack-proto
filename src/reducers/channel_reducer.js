@@ -2,6 +2,7 @@ import * as actionTypes from "../actions/types";
 
 const initialState = {
   currentChannel: null,
+  topUsers: null,
   isPrivateChannel: false
 };
 
@@ -16,6 +17,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isPrivateChannel: action.payload.isPrivateChannel
+      };
+    case actionTypes.SET_TOP_USERS:
+      return {
+        ...state,
+        topUsers: action.payload.topUsers
       };
     default:
       return state;

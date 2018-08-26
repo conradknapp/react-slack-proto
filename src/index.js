@@ -16,16 +16,25 @@ import Register from "./components/Auth/Register";
 
 // Import Semantic UI Styles
 import "semantic-ui-css/semantic.min.css";
-import "react-toastify/dist/ReactToastify.css";
 
 import firebase from "./firebase";
 
 const store = createStore(root_reducer, composeWithDevTools());
 
 class WithAuthorization extends React.Component {
+  state = {
+    currentUser: null
+  };
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        if (
+          this.state.currentUser &&
+          user.displayName !== this.state.currentUser
+        ) {
+          return;
+        }
+        this.setState({ currentUser: user.displayName });
         this.props.setUser(user);
       } else {
         this.props.setUser(null, false);
