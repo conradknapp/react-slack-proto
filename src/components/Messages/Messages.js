@@ -193,11 +193,24 @@ class Messages extends React.Component {
     });
   };
 
+  countTopUsers = messages => {
+    messages.reduce((acc, message) => {
+      if (message.user.name in acc) {
+        acc[message.user.name] += 1;
+      } else {
+        acc[message.user.name] = 1;
+      }
+      console.log(acc);
+      return acc;
+    }, {});
+  };
+
   addListeners = channelId => {
     let messages = [];
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
       messages.unshift(snap.val());
+      this.countTopUsers(messages);
       this.countUniqueUsers(messages);
       this.setState({
         messages,
@@ -252,7 +265,9 @@ class Messages extends React.Component {
   displaySkeleton = loading =>
     loading ? (
       <React.Fragment>
-        {[...Array(15)].map((_, i) => <Skeleton key={i} />)}
+        {[...Array(15)].map((_, i) => (
+          <Skeleton key={i} />
+        ))}
       </React.Fragment>
     ) : null;
 

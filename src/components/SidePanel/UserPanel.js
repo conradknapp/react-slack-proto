@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
- Dropdown, Icon, Header, Grid, Image as Img, Popup, Modal, Input, Message, Button } from "semantic-ui-react";
+ Dropdown, Icon, Header, Grid, Image as Img, Modal, Input, Message, Button } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
 import AvatarEditor from "react-avatar-editor";
 
@@ -15,7 +15,6 @@ class UserPanel extends React.Component {
     previewImage: "",
     croppedImage: "",
     userRef: firebase.auth().currentUser
-    // presenceRef: firebase.database().ref("presence")
   };
 
   dropdownOptions = () => [
@@ -39,7 +38,6 @@ class UserPanel extends React.Component {
   ];
 
   logoutUser = () => {
-    // this.state.presenceRef.child(this.props.currentUser.uid).remove();
     firebase
       .auth()
       .signOut()
@@ -117,29 +115,7 @@ class UserPanel extends React.Component {
             <Header inverted floated="left" as="h2">
               DevChat
             </Header>
-            <Header floated="right">
-              <Popup
-                trigger={
-                  <Icon.Group>
-                    <Icon name="bell outline" inverted size="large" />
-                    <Icon
-                      corner
-                      className="top right"
-                      name="circle"
-                      color="blue"
-                    />
-                  </Icon.Group>
-                }
-                on="click"
-                position="bottom center"
-              >
-                <Popup.Header>Notifications</Popup.Header>
-                <Popup.Content>hi</Popup.Content>
-              </Popup>
-            </Header>
-          </Grid.Row>
 
-          <Grid.Row className="user__panel--row">
             <Header as="h4" inverted>
               {/* <Icon name="circle" color="green" /> */}
               <Dropdown
@@ -154,7 +130,7 @@ class UserPanel extends React.Component {
             </Header>
           </Grid.Row>
           <Modal basic open={modal} onClose={this.closeModal}>
-            <Modal.Header>Add a channel</Modal.Header>
+            <Modal.Header>Change Avatar</Modal.Header>
             <Modal.Content>
               <Input
                 fluid

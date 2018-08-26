@@ -25,7 +25,8 @@ class MessagesHeader extends React.Component {
       uniqueUsers,
       searchLoading,
       handleStar,
-      isStarred
+      isStarred,
+      isPrivateChannel
     } = this.props;
 
     return (
@@ -33,12 +34,14 @@ class MessagesHeader extends React.Component {
         <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
           <span>
             {channel}{" "}
-            <Icon
-              size="small"
-              name={isStarred ? "star" : "star outline"}
-              onClick={handleStar}
-              color={isStarred ? "yellow" : "black"}
-            />
+            {!isPrivateChannel && (
+              <Icon
+                size="small"
+                name={isStarred ? "star" : "star outline"}
+                onClick={handleStar}
+                color={isStarred ? "yellow" : "black"}
+              />
+            )}
           </span>
           <Header.Subheader>{uniqueUsers}</Header.Subheader>
         </Header>
@@ -59,7 +62,7 @@ class MessagesHeader extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  currentChannel: state.channel.currentChannel
+  isPrivateChannel: state.channel.isPrivateChannel
 });
 
 export default connect(mapStateToProps)(MessagesHeader);
