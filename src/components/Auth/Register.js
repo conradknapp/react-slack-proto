@@ -74,7 +74,6 @@ class Register extends React.Component {
             .then(
               () => {
                 this.saveUser(createdUser).then(() => {
-                  //this.props.setUser(createdUser.user);
                   this.props.history.push("/");
                 });
               },

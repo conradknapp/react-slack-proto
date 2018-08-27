@@ -3,8 +3,6 @@ import firebase from "../../firebase";
 //prettier-ignore
 import { Button, Form, Grid, Header, Message, Segment, Icon } from 'semantic-ui-react';
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
-import { setUser } from "../../actions";
 
 class Login extends React.Component {
   state = {
@@ -26,8 +24,7 @@ class Login extends React.Component {
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(signedInUser => {
-          this.props.setUser(signedInUser.user);
-          this.props.history.push("/");
+          console.log("signedin user", signedInUser);
         })
         .catch(err => {
           console.error(err);
@@ -110,7 +107,4 @@ class Login extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  { setUser }
-)(Login);
+export default Login;
