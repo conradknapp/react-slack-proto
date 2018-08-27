@@ -157,23 +157,38 @@ class UserPanel extends React.Component {
                 name="previewImage"
                 onChange={this.handleChange}
               />
-              {previewImage && (
-                <AvatarEditor
-                  ref={node => (this.editor = node)}
-                  image={previewImage}
-                  width={100}
-                  height={100}
-                  border={50}
-                  scale={1.2}
-                />
-              )}
-              {croppedImage && <Image src={croppedImage} />}
-              {errors.length > 0 && (
-                <Message color="red">
-                  <h3>Error</h3>
-                  {this.displayErrors(errors)}
-                </Message>
-              )}
+              <Grid centered stackable columns={2}>
+                <Grid.Row centered>
+                  <Grid.Column className="ui center aligned grid">
+                    {previewImage && (
+                      <AvatarEditor
+                        ref={node => (this.editor = node)}
+                        image={previewImage}
+                        width={100}
+                        height={100}
+                        border={50}
+                        scale={1.2}
+                      />
+                    )}
+                  </Grid.Column>
+                  <Grid.Column>
+                    {croppedImage && (
+                      <Image
+                        style={{ margin: "3.5em auto" }}
+                        width={100}
+                        height={100}
+                        src={croppedImage}
+                      />
+                    )}
+                  </Grid.Column>
+                </Grid.Row>
+                {errors.length > 0 && (
+                  <Message color="red">
+                    <h3>Error</h3>
+                    {this.displayErrors(errors)}
+                  </Message>
+                )}
+              </Grid>
             </Modal.Content>
             <Modal.Actions>
               {croppedImage && (
