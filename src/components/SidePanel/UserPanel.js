@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 // prettier-ignore
 import {
- Dropdown, Icon, Header, Grid, Image as Img, Modal, Input, Message, Button } from "semantic-ui-react";
+ Dropdown, Icon, Header, Grid, Image, Modal, Input, Message, Button } from "semantic-ui-react";
 import { logoutUser } from "../../actions";
 import AvatarEditor from "react-avatar-editor";
 
@@ -139,7 +139,7 @@ class UserPanel extends React.Component {
               <Dropdown
                 trigger={
                   <span>
-                    <Img src={currentUser.photoURL} avatar />
+                    <Image src={currentUser.photoURL} avatar />
                     {currentUser.displayName}
                   </span>
                 }
@@ -167,7 +167,7 @@ class UserPanel extends React.Component {
                   scale={1.2}
                 />
               )}
-              {croppedImage && <Img src={croppedImage} />}
+              {croppedImage && <Image src={croppedImage} />}
               {errors.length > 0 && (
                 <Message color="red">
                   <h3>Error</h3>

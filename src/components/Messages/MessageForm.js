@@ -23,10 +23,6 @@ class MessageForm extends React.Component {
     loading: false
   };
 
-  // componentDidMount() {
-  //   this.messageInputRef.focus();
-  // }
-
   componentWillUnmount() {
     if (this.state.uploadTask !== null) {
       this.state.uploadTask.cancel();
@@ -202,8 +198,8 @@ class MessageForm extends React.Component {
     let oldMessage = this.state.message;
     let newMessage = this.colonToUnicode(`${oldMessage} ${emoji.colons} `);
     this.setState({ message: newMessage, emojiPicker: false });
-    // focus in textarea on choosing emoji
-    setTimeout(() => this.messageInputRef.focus(), 100);
+    // focus form input after adding emoji
+    setTimeout(() => this.messageInputRef.focus(), 0);
   };
 
   render() {

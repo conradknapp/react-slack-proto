@@ -1,9 +1,7 @@
 import React from "react";
 import firebase from "../../firebase";
 import { connect } from "react-redux";
-// prettier-ignore
-import { Segment, Comment, Button } from "semantic-ui-react";
-import { animateScroll } from "react-scroll";
+import { Segment, Comment } from "semantic-ui-react";
 
 import { setTopUsers } from "../../actions";
 
@@ -58,7 +56,14 @@ class Messages extends React.Component {
     }
   }
 
+  scrollToBottom = () =>
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+
   componentDidUpdate(prevProps, prevState) {
+    if (this.messagesEnd) {
+      this.scrollToBottom();
+    }
+
     const { channel, listeners } = this.state;
     // prettier-ignore
     if ((channel.id && !prevState.channel) || (channel.id !== prevState.channel.id)) {
@@ -196,23 +201,23 @@ class Messages extends React.Component {
   };
 
   countTopUsers = messages => {
-      let topUsers = messages.reduce((acc, message) => {
-        if (message.user.name in acc) {
-          acc[message.user.name] += 1;
-        } else {
-          acc[message.user.name] = 1;
-        }
-        return acc;
-      }, {});
-      console.log(topUsers);
-      this.props.setTopUsers(topUsers);
+    let topUsers = messages.reduce((acc, message) => {
+      if (message.user.name in acc) {
+        acc[message.user.name] += 1;
+      } else {
+        acc[message.user.name] = 1;
+      }
+      return acc;
+    }, {});
+    console.log(topUsers);
+    this.props.setTopUsers(topUsers);
   };
 
   addListeners = channelId => {
     let messages = [];
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
-      messages.unshift(snap.val());
+      messages.push(snap.val());
       this.countUniqueUsers(messages);
       this.countTopUsers(messages);
       this.setState({
@@ -243,11 +248,6 @@ class Messages extends React.Component {
       listener.ref.child(listener.id).off(listener.event);
     });
   };
-
-  scrollToTop = () =>
-    animateScroll.scrollToTop({
-      containerId: "messages"
-    });
 
   getMessagesRef = () => {
     const { messagesRef, privateMessagesRef } = this.state;
@@ -309,17 +309,22 @@ class Messages extends React.Component {
         />
         <Segment>
           <Comment.Group className="messages" id="messages">
-            <Button
-              onClick={this.scrollToTop}
+            {/* <Button
+              onClick={this.scrollToBottom}
               circular
               icon="arrow up"
               className="up__button"
-            />
-            {this.displayTypingUsers(typingUsers)}
+            /> */}
             {this.displaySkeleton(loading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
+            {this.displayTypingUsers(typingUsers)}
+            <div
+              ref={el => {
+                this.messagesEnd = el;
+              }}
+            />
           </Comment.Group>
         </Segment>
         <MessageForm getMessagesRef={this.getMessagesRef} />
