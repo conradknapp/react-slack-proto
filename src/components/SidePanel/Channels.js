@@ -30,16 +30,15 @@ class Channels extends React.Component {
   }
 
   addListeners = () => {
-    let channels = [];
+    let loadedChannels = [];
     this.state.channelsRef.on("child_added", snap => {
-      channels.push(snap.val());
-      this.setState({ channels });
+      loadedChannels.push(snap.val());
+      this.setState({ channels: loadedChannels });
+      const firstChannel = loadedChannels[0];
       if (this.state.initialLoad && this.state.channels.length > 0) {
-        this.props.setCurrentChannel(this.state.channels[0]);
-        this.setState({ channel: this.state.channels[0] });
+        this.props.setCurrentChannel(firstChannel);
       }
       this.setState({ initialLoad: false });
-
       this.addCountListener(snap.key);
     });
   };
@@ -129,7 +128,7 @@ class Channels extends React.Component {
   };
 
   handleChange = event =>
-    this.setState({ [event.target.name]: event.target.value.trim() });
+    this.setState({ [event.target.name]: event.target.value });
 
   handleSubmit = event => {
     event.preventDefault();
@@ -150,7 +149,8 @@ class Channels extends React.Component {
 
   resetNotifications = () => {
     let index = this.state.countNotifs.findIndex(
-      el => el.id === this.state.channel.id
+      // el => el.id === this.state.channel.id
+      el => el.id === this.props.currentChannel.id
     );
     if (index !== -1) {
       let countNotifs = this.state.countNotifs;
@@ -203,8 +203,7 @@ class Channels extends React.Component {
             <span>
               <Icon name="exchange" /> CHANNELS
             </span>{" "}
-            ({channels.length})
-            <Icon name="add" onClick={this.openModal} />
+            ({channels.length})<Icon name="add" onClick={this.openModal} />
           </Menu.Item>
           {this.displayChannels(channels)}
         </Menu.Menu>

@@ -12,7 +12,7 @@ import MetaPanel from "./components/MetaPanel/MetaPanel";
 
 class App extends React.Component {
   render() {
-    const { secondaryColor } = this.props;
+    const { secondaryColor, currentChannel, topUsers } = this.props;
 
     return (
       <Grid
@@ -24,19 +24,25 @@ class App extends React.Component {
         <SidePanel />
 
         <Grid.Column style={{ marginLeft: 320 }}>
-          <Messages />
+          <Messages currentChannel={currentChannel} key={Date.now()} />
         </Grid.Column>
 
-        <Grid.Column width={4}>
-          <MetaPanel />
-        </Grid.Column>
+        {/* <Grid.Column width={4}>
+          <MetaPanel
+            key={Date.now()}
+            topUsers={topUsers}
+            currentChannel={currentChannel}
+          />
+        </Grid.Column> */}
       </Grid>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  secondaryColor: state.color.secondaryColor
+  secondaryColor: state.color.secondaryColor,
+  currentChannel: state.channel.currentChannel,
+  topUsers: state.channel.topUsers
 });
 
 export default withAuthorization(connect(mapStateToProps)(App));

@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { Header, Segment, Accordion, Icon, Image } from "semantic-ui-react";
 
-import { connect } from "react-redux";
-
 class MetaPanel extends Component {
   state = {
-    loading: false,
-    currentChannel: null,
+    loading: true,
+    currentChannel: this.props.currentChannel,
+    topUsers: this.props.topUsers,
     activeIndex: 0
   };
 
-  handleClick = (event, titleProps) => {
+  handleClick = titleProps => {
     const { index } = titleProps;
     const { activeIndex } = this.state;
     const newIndex = activeIndex === index ? -1 : index;
@@ -19,9 +18,8 @@ class MetaPanel extends Component {
   };
 
   render() {
-    const { activeIndex } = this.state;
-    const { currentChannel, isPrivateChannel, topUsers } = this.props;
-
+    const { activeIndex, currentChannel, topUsers } = this.state;
+    const isPrivateChannel = false;
     if (isPrivateChannel) return null;
 
     return (
@@ -84,10 +82,4 @@ class MetaPanel extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentChannel: state.channel.currentChannel,
-  isPrivateChannel: state.channel.isPrivateChannel,
-  topUsers: state.channel.topUsers
-});
-
-export default connect(mapStateToProps)(MetaPanel);
+export default MetaPanel;

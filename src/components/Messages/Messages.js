@@ -20,7 +20,7 @@ class Messages extends React.Component {
     connectedRef: firebase.database().ref(".info/connected"),
     messages: [],
     listeners: [],
-    channel: null,
+    channel: this.props.currentChannel,
     loading: true,
     searchTerm: "",
     searchResults: [],
@@ -41,41 +41,30 @@ class Messages extends React.Component {
     );
   };
 
-  static getDerivedStateFromProps(props, state) {
-    // prettier-ignore
-    if (state.channel === null || props.currentChannel.id !== state.channel.id) {
-      return {
-        messages: [],
-        channel: props.currentChannel,
-        uniqueUsers: '0 users',
-        isStarred: null
-      };
-    }
-     else {
-      return null;
-    }
-  }
+  componentDidMount() {
+    const { channel, listeners, messages } = this.state;
 
-  scrollToBottom = () =>
-    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.messagesEnd) {
-      this.scrollToBottom();
-    }
-
-    const { channel, listeners } = this.state;
-    // prettier-ignore
-    if ((channel.id && !prevState.channel) || (channel.id !== prevState.channel.id)) {
+    if (channel) {
       this.detachListeners(listeners);
       this.addListeners(channel.id);
-      this.addTypingListener(channel.id);
     }
+
+    // this.countTopUsers(messages);
+    // this.countUniqueUsers(messages);
   }
 
   componentWillUnmount() {
     this.detachListeners(this.state.listeners);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.messagesEnd) {
+      this.scrollToBottom();
+    }
+  }
+
+  scrollToBottom = () =>
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
 
   getUserStars = () => {
     this.state.usersRef
@@ -83,9 +72,11 @@ class Messages extends React.Component {
       .child("starred")
       .once("value")
       .then(data => {
-        const channelIds = Object.keys(data.val());
-        const prevStarred = channelIds.includes(this.props.currentChannel.id);
-        this.setState({ isStarred: prevStarred });
+        if (data.val() !== null) {
+          const channelIds = Object.keys(data.val());
+          const prevStarred = channelIds.includes(this.props.currentChannel.id);
+          this.setState({ isStarred: prevStarred });
+        }
       })
       .catch(err => console.error(err));
   };
@@ -136,10 +127,11 @@ class Messages extends React.Component {
       return acc;
     }, []);
     this.setState({ searchResults });
+    // SetTimeout for Loading Animation
     setTimeout(() => this.setState({ searchLoading: false }), 1000);
   };
 
-  countUniqueUsers = (messages = []) => {
+  countUniqueUsers = messages => {
     const users = messages.reduce((acc, message) => {
       if (!acc.includes(message.user.name)) {
         acc.push(message.user.name);
@@ -213,33 +205,38 @@ class Messages extends React.Component {
     this.props.setTopUsers(topUsers);
   };
 
-  addListeners = channelId => {
-    let messages = [];
+  handleMessageAdded = channelId => {
+    let loadedMessages = [];
     const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", snap => {
-      messages.push(snap.val());
-      this.countUniqueUsers(messages);
-      this.countTopUsers(messages);
-      this.setState({
-        messages,
-        loading: false
-      });
+      loadedMessages.push(snap.val());
+      this.setState(
+        {
+          messages: loadedMessages,
+          loading: false
+        },
+        () => console.log('fired')
+      );
     });
-    this.getUserStars();
     this.addToListeners(channelId, ref, "child_added");
   };
 
-  addToListeners = (id, ref, event) => {
-    const listenerFound =
-      this.state.listeners.findIndex(listener => {
-        return (
-          listener.id === id && listener.ref === ref && listener.event === event
-        );
-      }) > -1;
+  addListeners = channelId => {
+    this.handleMessageAdded(channelId);
+    this.addTypingListener(channelId);
+    this.getUserStars();
+  };
 
-    if (!listenerFound) {
+  addToListeners = (id, ref, event) => {
+    const listenerFound = this.state.listeners.findIndex(listener => {
+      return (
+        listener.id === id && listener.ref === ref && listener.event === event
+      );
+    });
+
+    if (listenerFound === -1) {
       const newListener = { id, ref, event };
-      this.setState({ listeners: [...this.state.listeners, newListener] });
+      this.setState({ listeners: this.state.listeners.concat(newListener) });
     }
   };
 
@@ -254,7 +251,7 @@ class Messages extends React.Component {
     return this.props.isPrivateChannel ? privateMessagesRef : messagesRef;
   };
 
-  getChannelName = channel =>
+  displayChannelName = channel =>
     channel
       ? `${this.props.isPrivateChannel ? "@" : "#"}${channel.name}`
       : null;
@@ -265,7 +262,7 @@ class Messages extends React.Component {
       <Message key={message.timestamp} message={message} />
     ));
 
-  displaySkeleton = loading =>
+  displayMessageSkeleton = loading =>
     loading ? (
       <React.Fragment>
         {[...Array(15)].map((_, i) => (
@@ -299,7 +296,7 @@ class Messages extends React.Component {
     return (
       <React.Fragment>
         <MessagesHeader
-          channel={this.getChannelName(channel)}
+          channel={this.displayChannelName(channel)}
           handleSearchChange={this.handleSearchChange}
           handleStar={this.handleStar}
           uniqueUsers={uniqueUsers}
@@ -315,16 +312,12 @@ class Messages extends React.Component {
               icon="arrow up"
               className="up__button"
             /> */}
-            {this.displaySkeleton(loading)}
+            {this.displayMessageSkeleton(loading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}
             {this.displayTypingUsers(typingUsers)}
-            <div
-              ref={el => {
-                this.messagesEnd = el;
-              }}
-            />
+            <div ref={c => (this.messagesEnd = c)} />
           </Comment.Group>
         </Segment>
         <MessageForm getMessagesRef={this.getMessagesRef} />
