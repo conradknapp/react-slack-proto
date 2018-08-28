@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import { connect } from "react-redux";
+import withAuthorization from "./withAuthorization";
 
 import { Grid } from "semantic-ui-react";
 
@@ -38,4 +39,4 @@ const mapStateToProps = state => ({
   secondaryColor: state.color.secondaryColor
 });
 
-export default connect(mapStateToProps)(App);
+export default withAuthorization(connect(mapStateToProps)(App));

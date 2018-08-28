@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
         isLoading: false
       };
     case actionTypes.LOGOUT_USER:
-      return { ...initialState };
+      return { ...initialState, isLoading: false };
     default:
       return state;
   }
