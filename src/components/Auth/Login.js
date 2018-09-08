@@ -14,6 +14,13 @@ class Login extends React.Component {
     loading: false
   };
 
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.currentUser) {
+  //     console.log(nextProps.currentUser);
+  //     this.props.history.push("/");
+  //   }
+  // }
+
   handleChange = event =>
     this.setState({ [event.target.name]: event.target.value.trim() });
 
@@ -26,7 +33,7 @@ class Login extends React.Component {
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(signedInUser => {
-          console.log("lol again");
+          // this.props.setUser(signedInUser);
         })
         .catch(err => {
           console.error(err);

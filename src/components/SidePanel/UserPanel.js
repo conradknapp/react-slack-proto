@@ -10,6 +10,8 @@ import AvatarEditor from "react-avatar-editor";
 
 class UserPanel extends React.Component {
   state = {
+    user: this.props.currentUser,
+    primaryColor: this.props.primaryColor,
     modal: false,
     errors: [],
     previewImage: "",
@@ -28,7 +30,7 @@ class UserPanel extends React.Component {
       key: "user",
       text: (
         <span>
-          Signed in as <strong>{this.props.currentUser.displayName}</strong>
+          Signed in as <strong>{this.state.user.displayName}</strong>
         </span>
       ),
       disabled: true
@@ -123,8 +125,14 @@ class UserPanel extends React.Component {
   };
 
   render() {
-    const { modal, errors, previewImage, croppedImage } = this.state;
-    const { currentUser, primaryColor } = this.props;
+    const {
+      user,
+      primaryColor,
+      modal,
+      errors,
+      previewImage,
+      croppedImage
+    } = this.state;
 
     return (
       <Grid inverted style={{ backgroundColor: primaryColor }}>
@@ -139,8 +147,8 @@ class UserPanel extends React.Component {
               <Dropdown
                 trigger={
                   <span>
-                    <Image src={currentUser.photoURL} avatar />
-                    {currentUser.displayName}
+                    <Image src={user.photoURL} avatar />
+                    {user.displayName}
                   </span>
                 }
                 options={this.dropdownOptions()}
@@ -210,14 +218,9 @@ class UserPanel extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser,
-  primaryColor: state.color.primaryColor
-});
-
 export default withRouter(
   connect(
-    mapStateToProps,
+    null,
     { logoutUser }
   )(UserPanel)
 );

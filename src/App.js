@@ -1,8 +1,6 @@
 import React from "react";
 import "./App.css";
 import { connect } from "react-redux";
-import withAuthorization from "./withAuthorization";
-
 import { Grid } from "semantic-ui-react";
 
 import SidePanel from "./components/SidePanel/SidePanel";
@@ -10,39 +8,49 @@ import ColorPanel from "./components/ColorPanel/ColorPanel";
 import Messages from "./components/Messages/Messages";
 import MetaPanel from "./components/MetaPanel/MetaPanel";
 
-class App extends React.Component {
-  render() {
-    const { secondaryColor, currentChannel, topUsers } = this.props;
+const App = ({
+  primaryColor,
+  secondaryColor,
+  currentChannel,
+  isPrivateChannel,
+  topUsers,
+  currentUser
+}) => (
+  <Grid columns="equal" className="app" style={{ background: secondaryColor }}>
+    <ColorPanel currentUser={currentUser} />
+    <SidePanel
+      primaryColor={primaryColor}
+      currentUser={currentUser}
+      currentChannel={currentChannel}
+      key={currentUser && currentUser.uid}
+    />
 
-    return (
-      <Grid
-        columns="equal"
-        className="app"
-        style={{ background: secondaryColor }}
-      >
-        <ColorPanel />
-        <SidePanel />
+    <Grid.Column style={{ marginLeft: 320 }}>
+      <Messages
+        currentChannel={currentChannel}
+        currentUser={currentUser}
+        isPrivateChannel={isPrivateChannel}
+        key={currentChannel && currentChannel.id}
+      />
+    </Grid.Column>
 
-        <Grid.Column style={{ marginLeft: 320 }}>
-          <Messages currentChannel={currentChannel} key={Date.now()} />
-        </Grid.Column>
-
-        {/* <Grid.Column width={4}>
-          <MetaPanel
-            key={Date.now()}
-            topUsers={topUsers}
-            currentChannel={currentChannel}
-          />
-        </Grid.Column> */}
-      </Grid>
-    );
-  }
-}
+    <Grid.Column width={4}>
+      <MetaPanel
+        key={currentChannel && currentChannel.id}
+        topUsers={topUsers}
+        currentChannel={currentChannel}
+      />
+    </Grid.Column>
+  </Grid>
+);
 
 const mapStateToProps = state => ({
-  secondaryColor: state.color.secondaryColor,
+  currentUser: state.user.currentUser,
   currentChannel: state.channel.currentChannel,
-  topUsers: state.channel.topUsers
+  isPrivateChannel: state.channel.isPrivateChannel,
+  topUsers: state.channel.topUsers,
+  primaryColor: state.color.primaryColor,
+  secondaryColor: state.color.secondaryColor
 });
 
-export default withAuthorization(connect(mapStateToProps)(App));
+export default connect(mapStateToProps)(App);

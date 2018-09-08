@@ -2,7 +2,6 @@ import * as actionTypes from "../actions/types";
 
 const initialState = {
   currentUser: null,
-  isAuthenticated: false,
   isLoading: true
 };
 
@@ -11,7 +10,6 @@ export default (state = initialState, action) => {
     case actionTypes.SET_USER:
       return {
         currentUser: action.payload.currentUser,
-        isAuthenticated: action.payload.isAuthenticated,
         isLoading: false
       };
     case actionTypes.LOGOUT_USER:

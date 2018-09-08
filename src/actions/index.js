@@ -1,12 +1,11 @@
 import * as actionTypes from "./types";
 
 /* User Actions */
-export const setUser = (user, isAuthenticated = true) => {
+export const setUser = user => {
   return {
     type: actionTypes.SET_USER,
     payload: {
-      currentUser: user,
-      isAuthenticated
+      currentUser: user
     }
   };
 };
@@ -15,8 +14,7 @@ export const logoutUser = () => {
   return {
     type: actionTypes.LOGOUT_USER,
     payload: {
-      currentUser: null,
-      isAuthenticated: false
+      currentUser: null
     }
   };
 };

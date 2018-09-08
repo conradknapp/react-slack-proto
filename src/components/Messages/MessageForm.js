@@ -11,6 +11,9 @@ import ProgressBar from "./ProgressBar";
 
 class MessageForm extends React.Component {
   state = {
+    user: this.props.currentUser,
+    channel: this.props.currentChannel,
+    privateChannel: this.props.isPrivateChannel,
     message: "",
     errors: [],
     modal: false,
@@ -39,13 +42,13 @@ class MessageForm extends React.Component {
     }
     if (this.state.message) {
       this.state.typingRef
-        .child(this.props.currentChannel.id)
-        .child(this.props.currentUser.uid)
-        .set(this.props.currentUser.displayName);
+        .child(this.state.channel.id)
+        .child(this.state.user.uid)
+        .set(this.state.user.displayName);
     } else {
       this.state.typingRef
-        .child(this.props.currentChannel.id)
-        .child(this.props.currentUser.uid)
+        .child(this.state.channel.id)
+        .child(this.state.user.uid)
         .remove();
     }
   };
@@ -61,9 +64,9 @@ class MessageForm extends React.Component {
     let message = {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       user: {
-        name: this.props.currentUser.displayName,
-        avatar: this.props.currentUser.photoURL,
-        id: this.props.currentUser.uid
+        name: this.state.user.displayName,
+        avatar: this.state.user.photoURL,
+        id: this.state.user.uid
       }
     };
     if (fileUrl !== null) {
@@ -75,19 +78,20 @@ class MessageForm extends React.Component {
   };
 
   sendMessage = () => {
-    const { currentChannel, currentUser, getMessagesRef } = this.props;
+    const { getMessagesRef } = this.props;
+    const { user, channel } = this.state;
 
     if (this.state.message) {
       this.setState({ loading: true });
       getMessagesRef()
-        .child(currentChannel.id)
+        .child(channel.id)
         .push()
         .set(this.createMessage())
         .then(() => {
           this.setState({ message: "", errors: [], loading: false });
           this.state.typingRef
-            .child(currentChannel.id)
-            .child(currentUser.uid)
+            .child(channel.id)
+            .child(user.uid)
             .remove();
         })
         .catch(err => {
@@ -99,7 +103,7 @@ class MessageForm extends React.Component {
         });
     } else {
       this.setState({
-        errors: [...this.state.errors, { message: "Add a message " }]
+        errors: [...this.state.errors, { message: "Add a message" }]
       });
     }
   };
@@ -107,7 +111,7 @@ class MessageForm extends React.Component {
   uploadFile = (file, metadata) => {
     if (file === null) return false;
 
-    const pathToUpload = this.props.currentChannel.id;
+    const pathToUpload = this.state.channel.id;
     const ref = this.props.getMessagesRef();
     const filePath = `${this.getPath()}/${uuidv4()}.jpg`;
 
@@ -170,8 +174,8 @@ class MessageForm extends React.Component {
   };
 
   getPath = () => {
-    if (this.props.isPrivateChannel) {
-      return `chat/private-${this.props.currentChannel.id}`;
+    if (this.state.privateChannel) {
+      return `chat/private-${this.state.channel.id}`;
     } else {
       return "chat/public";
     }
@@ -277,10 +281,4 @@ class MessageForm extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser,
-  currentChannel: state.channel.currentChannel,
-  isPrivateChannel: state.channel.isPrivateChannel
-});
-
-export default connect(mapStateToProps)(MessageForm);
+export default connect(null)(MessageForm);

@@ -6,8 +6,12 @@ class MetaPanel extends Component {
     loading: true,
     currentChannel: this.props.currentChannel,
     topUsers: this.props.topUsers,
-    activeIndex: 0
+    activeIndex: 2
   };
+
+  componentDidMount() {
+    console.log(this.state.topUsers, this.state.currentChannel);
+  }
 
   handleClick = titleProps => {
     const { index } = titleProps;
@@ -20,12 +24,12 @@ class MetaPanel extends Component {
   render() {
     const { activeIndex, currentChannel, topUsers } = this.state;
     const isPrivateChannel = false;
-    if (isPrivateChannel) return null;
+    if (isPrivateChannel || !currentChannel) return null;
 
     return (
       <Segment loading={!currentChannel}>
         <Header as="h3" attached="top">
-          About # {currentChannel && currentChannel.name}
+          About # {currentChannel.name}
         </Header>
         <Accordion styled attached="true">
           <Accordion.Title
@@ -38,7 +42,7 @@ class MetaPanel extends Component {
             Channel Details
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 0}>
-            {currentChannel && currentChannel.details}
+            {currentChannel.details}
           </Accordion.Content>
 
           <Accordion.Title
@@ -73,8 +77,8 @@ class MetaPanel extends Component {
             Created By
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 2}>
-            {currentChannel && <Image src={currentChannel.createdBy.avatar} />}
-            {currentChannel && currentChannel.createdBy.name}
+            <Image src={currentChannel.createdBy.avatar} />
+            {currentChannel.createdBy.name}
           </Accordion.Content>
         </Accordion>
       </Segment>

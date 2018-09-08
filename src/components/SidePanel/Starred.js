@@ -7,6 +7,7 @@ import { setCurrentChannel, setPrivateChannel } from "../../actions";
 class Starred extends Component {
   state = {
     active: "",
+    user: this.props.currentUser,
     usersRef: firebase.database().ref("users"),
     starredChannels: []
   };
@@ -22,7 +23,7 @@ class Starred extends Component {
 
   addListener = () => {
     this.state.usersRef
-      .child(this.props.currentUser.uid)
+      .child(this.state.user.uid)
       .child("starred")
       .on("child_added", snap => {
         const starredChannel = { id: snap.key, ...snap.val() };
@@ -34,7 +35,7 @@ class Starred extends Component {
 
   addRemoveListener = () => {
     this.state.usersRef
-      .child(this.props.currentUser.uid)
+      .child(this.state.user.uid)
       .child("starred")
       .on("child_removed", snap => {
         const starredChannel = { id: snap.key, ...snap.val() };
@@ -92,11 +93,7 @@ class Starred extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
-});
-
 export default connect(
-  mapStateToProps,
+  null,
   { setPrivateChannel, setCurrentChannel }
 )(Starred);

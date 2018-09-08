@@ -1,8 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 
 class MessagesHeader extends React.Component {
+  state = {
+    privateChannel: this.props.privateChannel
+  };
+
   componentDidMount() {
     window.addEventListener("keyup", this.focusSearchInput);
   }
@@ -20,21 +23,21 @@ class MessagesHeader extends React.Component {
 
   render() {
     const {
-      channel,
+      channelName,
       handleSearchChange,
       uniqueUsers,
       searchLoading,
       handleStar,
       isStarred,
-      isPrivateChannel
+      privateChannel
     } = this.props;
 
     return (
       <Segment clearing>
         <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
           <span>
-            {channel}{" "}
-            {!isPrivateChannel && (
+            {channelName}{" "}
+            {!privateChannel && (
               <Icon
                 size="small"
                 name={isStarred ? "star" : "star outline"}
@@ -61,8 +64,4 @@ class MessagesHeader extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  isPrivateChannel: state.channel.isPrivateChannel
-});
-
-export default connect(mapStateToProps)(MessagesHeader);
+export default MessagesHeader;

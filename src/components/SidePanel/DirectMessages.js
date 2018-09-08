@@ -8,6 +8,8 @@ import { setCurrentChannel, setPrivateChannel } from "../../actions";
 class DirectMessages extends React.Component {
   state = {
     //activeItem: "inbox",
+    user: this.props.currentUser,
+    channel: this.props.currentChannel,
     users: [],
     usersRef: firebase.database().ref("users"),
     connectedRef: firebase.database().ref(".info/connected"),
@@ -15,7 +17,9 @@ class DirectMessages extends React.Component {
   };
 
   componentDidMount() {
-    this.addListeners();
+    if (this.state.user && this.state.user.uid) {
+      this.addListeners();
+    }
   }
 
   componentWillUnmount() {
@@ -24,7 +28,7 @@ class DirectMessages extends React.Component {
 
   addListeners = () => {
     this.state.usersRef.on("child_added", snap => {
-      if (this.props.currentUser.uid !== snap.key) {
+      if (this.state.user.uid !== snap.key) {
         let user = snap.val();
         user["uid"] = snap.key;
         user["status"] = "offline";
@@ -33,20 +37,20 @@ class DirectMessages extends React.Component {
     });
 
     this.state.presenceRef.on("child_added", snap => {
-      if (this.props.currentUser.uid !== snap.key) {
+      if (this.state.user.uid !== snap.key) {
         this.addStatusToUser(snap.key);
       }
     });
 
     this.state.presenceRef.on("child_removed", snap => {
-      if (this.props.currentUser.uid !== snap.key) {
+      if (this.state.user.uid !== snap.key) {
         this.addStatusToUser(snap.key, false);
       }
     });
 
     this.state.connectedRef.on("value", snap => {
       if (snap.val() === true) {
-        const ref = this.state.presenceRef.child(this.props.currentUser.uid);
+        const ref = this.state.presenceRef.child(this.state.user.uid);
         ref.set(true);
         ref.onDisconnect().remove(err => {
           if (err !== null) {
@@ -70,7 +74,7 @@ class DirectMessages extends React.Component {
   isUserOnline = user => user.status === "online";
 
   isChannelActive = user => {
-    if (this.props.currentChannel) {
+    if (this.state.channel) {
       const channelId = this.getChannelId(user.uid);
       return this.props.currentChannel.id === channelId;
     }
@@ -132,12 +136,7 @@ class DirectMessages extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser,
-  currentChannel: state.channel.currentChannel
-});
-
 export default connect(
-  mapStateToProps,
+  null,
   { setCurrentChannel, setPrivateChannel }
 )(DirectMessages);

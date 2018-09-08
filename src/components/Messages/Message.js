@@ -1,11 +1,11 @@
 import React from "react";
 import moment from "moment";
-import { connect } from "react-redux";
 import { Comment, Image } from "semantic-ui-react";
 
 class Message extends React.Component {
   state = {
-    image: false
+    image: false,
+    user: this.props.currentUser
   };
 
   componentDidMount() {
@@ -19,7 +19,7 @@ class Message extends React.Component {
   };
 
   isOwnMessage = message =>
-    message.user.id === this.props.currentUser.uid ? "message__self" : null;
+    message.user.id === this.state.user.uid ? "message__self" : null;
 
   fromNow = time => moment(time).fromNow();
 
@@ -44,8 +44,4 @@ class Message extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
-});
-
-export default connect(mapStateToProps)(Message);
+export default Message;

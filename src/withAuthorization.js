@@ -10,9 +10,11 @@ const withAuthorization = Component => {
     componentDidMount() {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
+          // console.log(user);
           this.props.setUser(user);
           this.props.history.push("/");
         } else {
+          this.props.logoutUser();
           this.props.history.push("/login");
         }
       });
@@ -23,9 +25,9 @@ const withAuthorization = Component => {
   }
 
   const mapStateToProps = state => ({
-    isAuthenticated: state.user.isAuthenticated,
     isLoading: state.user.isLoading
   });
+
   return withRouter(
     connect(
       mapStateToProps,

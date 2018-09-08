@@ -10,6 +10,7 @@ import { setColors, resetColors } from "../../actions";
 class ColorPanel extends React.Component {
   state = {
     colors: [],
+    user: this.props.currentUser,
     usersRef: firebase.database().ref("users"),
     primary: "",
     secondary: "",
@@ -28,7 +29,7 @@ class ColorPanel extends React.Component {
   addListener = () => {
     let colors = [];
     this.state.usersRef
-      .child(`${this.props.currentUser.uid}/colors`)
+      .child(`${this.state.user.uid}/colors`)
       .on("child_added", snap => {
         colors.unshift(snap.val());
         this.setState({ colors });
@@ -58,7 +59,7 @@ class ColorPanel extends React.Component {
 
   saveColors = () => {
     this.state.usersRef
-      .child(`${this.props.currentUser.uid}/colors`)
+      .child(`${this.state.user.uid}/colors`)
       .push()
       .update({
         primary: this.state.primary,
@@ -148,11 +149,7 @@ class ColorPanel extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
-});
-
 export default connect(
-  mapStateToProps,
+  null,
   { setColors, resetColors }
 )(ColorPanel);
