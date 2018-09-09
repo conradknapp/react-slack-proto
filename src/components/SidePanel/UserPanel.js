@@ -130,13 +130,13 @@ class UserPanel extends React.Component {
     return (
       <Grid inverted style={{ backgroundColor: primaryColor }}>
         <Grid.Column>
-          <Grid.Row className="user__panel--row">
+          <Grid.Row style={{ padding: "1.5em", margin: 0 }}>
             <Header inverted floated="left" as="h2">
               <Icon name="code" />
               <Header.Content>DevChat</Header.Content>
             </Header>
 
-            <Header as="h4" inverted>
+            <Header style={{ padding: "0.25em" }} as="h4" inverted>
               <Dropdown
                 trigger={
                   <span>
