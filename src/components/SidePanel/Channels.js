@@ -9,6 +9,7 @@ class Channels extends React.Component {
   state = {
     countNotifs: [],
     active: "",
+    user: this.props.currentUser,
     channel: null,
     channels: [],
     channelName: "",
@@ -30,6 +31,10 @@ class Channels extends React.Component {
   }
 
   addListeners = () => {
+    this.loadChannels();
+  };
+
+  loadChannels = () => {
     let loadedChannels = [];
     this.state.channelsRef.on("child_added", snap => {
       loadedChannels.push(snap.val());
@@ -45,12 +50,14 @@ class Channels extends React.Component {
 
   addCountListener = channelId => {
     this.state.messagesRef.child(channelId).on("value", snap => {
-      this.handleNotifications(
-        channelId,
-        this.props.currentChannel.id,
-        this.state.countNotifs,
-        snap
-      );
+      if (this.props.currentChannel) {
+        this.handleNotifications(
+          channelId,
+          this.props.currentChannel.id,
+          this.state.countNotifs,
+          snap
+        );
+      }
     });
   };
 
@@ -106,8 +113,8 @@ class Channels extends React.Component {
       name: channelName,
       details: channelDetails,
       createdBy: {
-        name: this.props.currentUser.displayName,
-        avatar: this.props.currentUser.photoURL
+        name: this.state.user.displayName,
+        avatar: this.state.user.photoURL
       }
     };
 
@@ -149,7 +156,6 @@ class Channels extends React.Component {
 
   resetNotifications = () => {
     let index = this.state.countNotifs.findIndex(
-      // el => el.id === this.state.channel.id
       el => el.id === this.props.currentChannel.id
     );
     if (index !== -1) {
@@ -163,7 +169,7 @@ class Channels extends React.Component {
   changeChannel = channel => {
     this.state.typingRef
       .child(this.props.currentChannel.id)
-      .child(this.props.currentUser.uid)
+      .child(this.state.user.uid)
       .remove();
     this.handleItemClick(channel);
     this.resetNotifications();
@@ -250,12 +256,12 @@ class Channels extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentChannel: state.channel.currentChannel,
-  currentUser: state.user.currentUser
-});
+// const mapStateToProps = state => ({
+//   currentChannel: state.channel.currentChannel,
+//   currentUser: state.user.currentUser
+// });
 
 export default connect(
-  mapStateToProps,
+  null,
   { setCurrentChannel, setPrivateChannel }
 )(Channels);

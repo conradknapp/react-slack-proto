@@ -4,16 +4,12 @@ import { Header, Segment, Accordion, Icon, Image } from "semantic-ui-react";
 class MetaPanel extends Component {
   state = {
     loading: true,
-    currentChannel: this.props.currentChannel,
-    topUsers: this.props.topUsers,
-    activeIndex: 2
+    channel: this.props.currentChannel,
+    privateChannel: this.props.isPrivateChannel,
+    activeIndex: 0
   };
 
-  componentDidMount() {
-    console.log(this.state.topUsers, this.state.currentChannel);
-  }
-
-  handleClick = titleProps => {
+  handleClick = (event, titleProps) => {
     const { index } = titleProps;
     const { activeIndex } = this.state;
     const newIndex = activeIndex === index ? -1 : index;
@@ -22,14 +18,15 @@ class MetaPanel extends Component {
   };
 
   render() {
-    const { activeIndex, currentChannel, topUsers } = this.state;
-    const isPrivateChannel = false;
-    if (isPrivateChannel || !currentChannel) return null;
+    const { activeIndex, channel, privateChannel } = this.state;
+    const { topUsers } = this.props;
+
+    if (privateChannel || !channel) return null;
 
     return (
-      <Segment loading={!currentChannel}>
+      <Segment>
         <Header as="h3" attached="top">
-          About # {currentChannel.name}
+          About # {channel.name}
         </Header>
         <Accordion styled attached="true">
           <Accordion.Title
@@ -42,7 +39,7 @@ class MetaPanel extends Component {
             Channel Details
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 0}>
-            {currentChannel.details}
+            {channel.details}
           </Accordion.Content>
 
           <Accordion.Title
@@ -52,7 +49,7 @@ class MetaPanel extends Component {
           >
             <Icon name="dropdown" />
             <Icon name="user circle" />
-            Members
+            Top Posters
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 1}>
             {topUsers &&
@@ -77,8 +74,8 @@ class MetaPanel extends Component {
             Created By
           </Accordion.Title>
           <Accordion.Content active={activeIndex === 2}>
-            <Image src={currentChannel.createdBy.avatar} />
-            {currentChannel.createdBy.name}
+            <Image src={channel.createdBy.avatar} />
+            {channel.createdBy.name}
           </Accordion.Content>
         </Accordion>
       </Segment>

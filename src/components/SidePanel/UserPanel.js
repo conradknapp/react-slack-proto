@@ -11,7 +11,6 @@ import AvatarEditor from "react-avatar-editor";
 class UserPanel extends React.Component {
   state = {
     user: this.props.currentUser,
-    primaryColor: this.props.primaryColor,
     modal: false,
     errors: [],
     previewImage: "",
@@ -125,29 +124,23 @@ class UserPanel extends React.Component {
   };
 
   render() {
-    const {
-      user,
-      primaryColor,
-      modal,
-      errors,
-      previewImage,
-      croppedImage
-    } = this.state;
+    const { user, modal, errors, previewImage, croppedImage } = this.state;
+    const { primaryColor } = this.props;
 
     return (
       <Grid inverted style={{ backgroundColor: primaryColor }}>
         <Grid.Column>
           <Grid.Row className="user__panel--row">
             <Header inverted floated="left" as="h2">
-              DevChat
+              <Icon name="code" />
+              <Header.Content>DevChat</Header.Content>
             </Header>
 
             <Header as="h4" inverted>
-              {/* <Icon name="circle" color="green" /> */}
               <Dropdown
                 trigger={
                   <span>
-                    <Image src={user.photoURL} avatar />
+                    <Image src={user.photoURL} spaced="right" avatar />
                     {user.displayName}
                   </span>
                 }

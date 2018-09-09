@@ -23,7 +23,7 @@ class Messages extends React.Component {
     connectedRef: firebase.database().ref(".info/connected"),
     messages: [],
     listeners: [],
-    loading: true,
+    messagesLoading: true,
     searchTerm: "",
     searchResults: [],
     searchFocused: false,
@@ -50,6 +50,7 @@ class Messages extends React.Component {
       this.detachListeners(listeners);
       this.addListeners(channel.id);
     }
+
     // this.countTopUsers(messages);
     // this.countUniqueUsers(messages);
   }
@@ -210,8 +211,10 @@ class Messages extends React.Component {
       loadedMessages.push(snap.val());
       this.setState({
         messages: loadedMessages,
-        loading: false
+        messagesLoading: false
       });
+      this.countTopUsers(loadedMessages);
+      this.countUniqueUsers(loadedMessages);
     });
     this.addToListeners(channelId, ref, "child_added");
   };
@@ -242,8 +245,8 @@ class Messages extends React.Component {
   };
 
   getMessagesRef = () => {
-    const { messagesRef, privateMessagesRef } = this.state;
-    return this.state.privateChannel ? privateMessagesRef : messagesRef;
+    const { messagesRef, privateMessagesRef, privateChannel } = this.state;
+    return privateChannel ? privateMessagesRef : messagesRef;
   };
 
   displayChannelName = channel =>
@@ -280,7 +283,7 @@ class Messages extends React.Component {
     const {
       channel,
       messages,
-      loading,
+      messagesLoading,
       searchTerm,
       searchResults,
       searchFocused,
@@ -304,13 +307,7 @@ class Messages extends React.Component {
         />
         <Segment>
           <Comment.Group className="messages" id="messages">
-            {/* <Button
-              onClick={this.scrollToBottom}
-              circular
-              icon="arrow up"
-              className="up__button"
-            /> */}
-            {this.displayMessageSkeleton(loading)}
+            {this.displayMessageSkeleton(messagesLoading)}
             {searchTerm
               ? this.displayMessages(searchResults)
               : this.displayMessages(messages)}

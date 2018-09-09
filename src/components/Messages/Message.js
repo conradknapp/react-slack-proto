@@ -4,8 +4,7 @@ import { Comment, Image } from "semantic-ui-react";
 
 class Message extends React.Component {
   state = {
-    image: false,
-    user: this.props.currentUser
+    image: false
   };
 
   componentDidMount() {
@@ -19,7 +18,7 @@ class Message extends React.Component {
   };
 
   isOwnMessage = message =>
-    message.user.id === this.state.user.uid ? "message__self" : null;
+    message.user.id === this.props.currentUser.uid ? "message__self" : null;
 
   fromNow = time => moment(time).fromNow();
 
